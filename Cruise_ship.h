@@ -27,9 +27,6 @@ public:
 	void update() override;
     
 	void describe() const override;
-
-    
-    
     
     
     

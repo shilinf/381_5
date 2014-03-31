@@ -25,6 +25,7 @@ Ship.o: Ship.cpp Ship.h Model.h Utility.h Island.h
 	$(CC) $(CFLAGS) Ship.cpp
 
 Cruise_ship.o: Cruise_ship.cpp Cruise_ship.h Model.h Ship.h Island.h Utility.h
+	$(CC) $(CFLAGS) Cruise_ship.cpp
 
 Tanker.o: Tanker.cpp Tanker.h Ship.h Model.h Utility.h Island.h
 	$(CC) $(CFLAGS) Tanker.cpp
