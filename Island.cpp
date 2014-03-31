@@ -8,12 +8,12 @@ using std::cout; using std::endl;
 
 Island::Island (const string& name_, Point position_, double fuel_, double production_rate_) : Sim_object(name_), position(position_), fuel(fuel_), production_rate(production_rate_)
 {
-    cout << "Island " << name_ << " constructed" << endl;
+    //cout << "Island " << name_ << " constructed" << endl;
 }
 
 Island::~Island()
 {
-    cout << "Island " << get_name() << " destructed" << endl;
+    //cout << "Island " << get_name() << " destructed" << endl;
 }
 
 double Island::provide_fuel(double request)

@@ -15,7 +15,7 @@ Ship::Ship(const string& name_, Point position_, double fuel_capacity_,
     maximum_speed(maximum_speed_), fuel_consumption(fuel_consumption_), resistance(resistance_), ship_state(STOPPED), track(position_)
 {
     //Model::get_instance().notify_fuel(name_, fuel);
-    cout << "Ship " << name_ << " constructed" << endl;
+    //cout << "Ship " << name_ << " constructed" << endl;
 }
 
 bool Ship::can_move() const
@@ -211,7 +211,7 @@ are defining it just to get the destructor message output.
 
 Ship::~Ship()
 {
-	cout << "Ship "  << get_name() << " destructed" << endl;
+	//cout << "Ship "  << get_name() << " destructed" << endl;
 }
 
 /* Private Function Definitions */

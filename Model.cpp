@@ -44,7 +44,7 @@ Model::Model() : time(0){
     
     copy(island_container.begin(), island_container.end(), inserter(object_container, object_container.begin()));
     copy(ship_container.begin(), ship_container.end(), inserter(object_container, object_container.begin()));
-	cout << "Model constructed" << endl;
+	//cout << "Model constructed" << endl;
 }
 
 /*

@@ -10,12 +10,12 @@ using std::shared_ptr;
 
 Tanker::Tanker(const std::string& name_, Point position_) : Ship(name_, position_, 100., 10., 2., 0), cargo_capacity(1000.), cargo(0.), tanker_state(NO_CARGO_DESTINATIONS), load_destination(nullptr), unload_destination(nullptr)
 {
-    cout << "Tanker " << name_ << " constructed" << endl;
+    //cout << "Tanker " << name_ << " constructed" << endl;
 }
 
 Tanker::~Tanker()
 {
-    cout << "Tanker " << get_name() << " destructed" << endl;
+    //cout << "Tanker " << get_name() << " destructed" << endl;
 }
 
 void Tanker::set_destination_position_and_speed(Point destination, double speed)

@@ -13,13 +13,13 @@ Warship::Warship(const std::string& name_, Point position_, double fuel_capacity
     Ship(name_, position_, fuel_capacity_, maximum_speed_, fuel_consumption_, resistance_),
         firepower(firepower_), maximum_range(maximum_range_), warship_state(NOT_ATTACKING)
 {
-    cout << "Warship " << get_name() << " constructed" << endl;
+    //cout << "Warship " << get_name() << " constructed" << endl;
 }
 
 
 Warship::~Warship()
 {
-    cout << "Warship " << get_name() << " destructed" << endl;
+    //cout << "Warship " << get_name() << " destructed" << endl;
 }
 
 void Warship::describe() const

@@ -7,10 +7,10 @@ using std::cout; using std::endl;
 
 Sim_object::Sim_object(const string& name_): name(name_)
 {
-    cout << "Sim_object " << name << " constructed" << endl;
+    //cout << "Sim_object " << name << " constructed" << endl;
 }
 
 Sim_object::~Sim_object()
 {
-    cout << "Sim_object " << name << " destructed" << endl;
+    //cout << "Sim_object " << name << " destructed" << endl;
 }
