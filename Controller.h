@@ -3,6 +3,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <memory>
 
 /* Controller
 This class is responsible for controlling the Model and View according to interactions

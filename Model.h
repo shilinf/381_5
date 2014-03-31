@@ -5,6 +5,7 @@
 #include <map>
 #include <set>
 #include <vector>
+#include <memory>
 
 /*
 Model is part of a simplified Model-View-Controller pattern.
