@@ -64,7 +64,7 @@ void Warship::update()
     Ship::update();
     if (warship_state == ATTACKING) {
         shared_ptr<Ship> sp = target_ptr.lock();
-        if (!is_afloat() || !sp ||  !sp->is_afloat()) {
+        if (!is_afloat() || !sp || !sp->is_afloat()) {
             stop_attack();
             target_ptr.reset();
         }
