@@ -9,13 +9,14 @@
 #include <iostream>
 #include <map>
 #include <utility>
+#include <algorithm>
 
 using std::string;
 using std::cout; using std::cin; using std::endl;
 using std::map;
 using std::make_pair;
 using std::shared_ptr; using std::make_shared;
-using std::for_each;
+using std::for_each; using std::find_if;
 using std::mem_fn;
 
 Controller::Controller()

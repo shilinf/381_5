@@ -6,6 +6,7 @@
 #include "Sim_object.h"
 #include "Track_base.h"
 #include <string>
+#include <memory>
 
 /***** Ship Class *****/
 /* A Ship has a name, initial position, amount of fuel, and parameters 

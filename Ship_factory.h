@@ -2,6 +2,7 @@
 #define SHIP_FACTORY_H
 
 #include <string>
+#include <memory>
 struct Point;
 
 class Ship;

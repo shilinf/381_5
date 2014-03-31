@@ -4,6 +4,7 @@
 
 #include "Ship.h"
 #include <vector>
+#include <memory>
 
 class Island;
 

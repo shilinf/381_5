@@ -3,6 +3,7 @@
 
 
 #include "Ship.h"
+#include <memory>
 /*
 A Tanker is a ship with a large corgo capacity for fuel.
 It can be told an Island to load fuel at, and an Island to unload at.

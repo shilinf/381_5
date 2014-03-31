@@ -3,6 +3,7 @@
 
 
 #include "Ship.h"
+#include <memory>
 
 /* Warship class
 A Warship is a ship with firepower and range member variables, and some services for
