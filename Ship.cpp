@@ -160,7 +160,7 @@ void Ship::receive_hit(int hit_force, shared_ptr<Ship> attacker_ptr)
 {
     resistance -= hit_force;
     cout << get_name() << " hit with " << hit_force << ", resistance now " << resistance << endl;
-    if (resistance < 0) {
+    if (resistance < 0.) {
         cout << get_name() << " sunk" << endl;
         ship_state = SUNK;
         track.set_speed(0.);

@@ -53,7 +53,7 @@ void Warship::stop_attack()
     if (!is_attacking())
         throw Error("Was not attacking!");
     warship_state = NOT_ATTACKING;
-    target_ptr.reset();
+    //target_ptr.reset();
     cout << get_name() << " stopping attack" << endl;
 }
 
@@ -66,7 +66,6 @@ void Warship::update()
         shared_ptr<Ship> sp = target_ptr.lock();
         if (!is_afloat() || !sp || !sp->is_afloat()) {
             stop_attack();
-            target_ptr.reset();
         }
         else
             cout << get_name() << " is attacking " << endl;
@@ -83,7 +82,7 @@ bool Warship::is_attacking() const
 void Warship::fire_at_target()
 {
     cout << get_name() << " fires" << endl;
-    get_target()->receive_hit(firepower, shared_ptr<Ship>(this));
+    get_target()->receive_hit(firepower, shared_from_this());
 }
 
 bool Warship::target_in_range() const

@@ -11,7 +11,7 @@ protected classes to manage many of the details of warship behavior. This is an
 abstract base class, so concrete classes derived from Warship must be declared.
 */
 
-class Warship : public Ship {
+class Warship : public Ship, public std::enable_shared_from_this<Ship> {
 public:
 	// initialize, then output constructor message
 	Warship(const std::string& name_, Point position_, double fuel_capacity_, 
@@ -57,6 +57,7 @@ private:
     int firepower;
     double maximum_range;
     Warship_state_e warship_state;
+    
     std::weak_ptr<Ship> target_ptr;
 };
 

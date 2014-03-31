@@ -207,6 +207,8 @@ void Bridge_view::update_location(const std::string& name, Point location)
     if (pair_it != points.end())
         points.erase(pair_it);
     points.insert(make_pair(name, location));
+    if (name == ownship_name)
+        ownship_location = location;
 }
 
 void Bridge_view::update_remove(const std::string& name)

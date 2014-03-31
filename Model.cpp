@@ -106,6 +106,16 @@ shared_ptr<Ship> Model::get_ship_ptr(const std::string& name) const
                               
 void Model::describe() const
 {
+    if (object_container.find("Aj") == object_container.end()) {
+        cout << "Didn't find AJ" << endl;
+    }
+    else {
+        object_container.find("Aj")->second->describe();
+        cout << object_container.find("Aj")->second->get_name() << endl;
+        cout << "find Aj" << endl;
+    }
+    
+    
     for_each(object_container.begin(), object_container.end(),
              bind(&Sim_object::describe,
                   bind(& map<string, shared_ptr<Sim_object> >::value_type::second, _1)));
