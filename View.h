@@ -1,9 +1,7 @@
 #ifndef VIEW_H
 #define VIEW_H
 
-#include "Geometry.h"
 #include <string>
-#include <map>
 
 /* *** View class ***
 The View class encapsulates the data and functions needed to generate the map
@@ -28,50 +26,47 @@ with the appropriate functions. Since the view "remembers" the previously update
 information, the draw function will print out a map showing the previous objects
 using the new settings.
 */
+struct Course_speed;
+struct Point;
 
 class View {
 public:
 	// default constructor sets the default size, scale, and origin, outputs constructor message
-	View(); 
-	~View();	// outputs destructor message
-	
+    //View() {}
+    
+	//virtual ~View() {};	// outputs destructor message
+    
 	// Save the supplied name and location for future use in a draw() call
 	// If the name is already present,the new location replaces the previous one.
-	void update_location(const std::string& name, Point location);
+	virtual void update_location(const std::string& name, Point location);
+    
+    
+    virtual void update_fuel(const std::string& name, double fuel);
+    
+    
+    
+    virtual void update_course_speed(const std::string& name, Course_speed cs);
 	
+    
+    virtual void update_speed(const std::string& name, double speed);
+    
+    
+    // reconsider when use = 0;
+    
+    
+    
 	// Remove the name and its location; no error if the name is not present.
-	void update_remove(const std::string& name);
-	
+	virtual void update_remove(const std::string& name) = 0;
+    
+    
+    
+    
 	// prints out the current map
-	void draw();
+	virtual void draw() = 0;
 	
 	// Discard the saved information - drawing will show only a empty pattern
-	void clear(); 
-	
-	// modify the display parameters
-	// if the size is out of bounds will throw Error("New map size is too big!")
-	// or Error("New map size is too small!")
-	void set_size(int size_);
-	
-	// If scale is not postive, will throw Error("New map scale must be positive!");
-	void set_scale(double scale_);
-	
-	// any values are legal for the origin
-	void set_origin(Point origin_);
-	
-	// set the parameters to the default values
-	void set_defaults();
-				
-private:
-	int size;			// current size of the display
-	double scale;		// distance per cell of the display
-	Point origin;		// coordinates of the lower-left-hand corner
-    std::map<std::string, Point> points;
+	virtual void clear() = 0;
 
-	// Calculate the cell subscripts corresponding to the location parameter, using the 
-	// current size, scale, and origin of the display. 
-	// Return true if the location is within the map, false if not
-	bool get_subscripts(int &ix, int &iy, Point location);
 };
 
 #endif

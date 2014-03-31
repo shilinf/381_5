@@ -24,6 +24,7 @@ public:
     void stop() override;
 	
 	void update() override;
+    
 	void describe() const override;
 
     
@@ -34,7 +35,7 @@ public:
 private:
     enum Cruise_state_e {NO_DESTINATION, MOVING, REFUEL, WAIT, FIND_NEXT_ISLAND};
     Cruise_state_e cruise_state;
-    std::vector<std::shared_ptr<Island>> path;
+    std::vector<std::shared_ptr<Island> > path;
     
     // do we need to store the speed?????
     double cruise_speed;

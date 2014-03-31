@@ -108,7 +108,7 @@ void Model::describe() const
 {
     for_each(object_container.begin(), object_container.end(),
              bind(&Sim_object::describe,
-                  bind(& map<string, shared_ptr<Sim_object>>::value_type::second, _1)));
+                  bind(& map<string, shared_ptr<Sim_object> >::value_type::second, _1)));
 }
 
 
@@ -118,7 +118,7 @@ void Model::update()
     ++time;
     for_each(object_container.begin(), object_container.end(),
              bind(&Sim_object::update,
-                  bind(& map<string, shared_ptr<Sim_object>>::value_type::second, _1)));
+                  bind(& map<string, shared_ptr<Sim_object> >::value_type::second, _1)));
 }
 
 void Model::attach(shared_ptr<View> view)
@@ -126,7 +126,7 @@ void Model::attach(shared_ptr<View> view)
     view_container.insert(view);
     for_each(object_container.begin(), object_container.end(),
              bind(&Sim_object::broadcast_current_state,
-                  bind(& map<string, shared_ptr<Sim_object>>::value_type::second, _1)));
+                  bind(& map<string, shared_ptr<Sim_object> >::value_type::second, _1)));
 }
 
 void Model::detach(shared_ptr<View> view)
@@ -134,11 +134,34 @@ void Model::detach(shared_ptr<View> view)
     view_container.erase(view_container.find(view));
 }
 
+
+
+
 void Model::notify_location(const std::string& name, Point location)
 {
     for_each(view_container.begin(), view_container.end(),
              bind(&View::update_location, _1, ref(name), ref(location)));
 }
+
+void Model::notify_fuel(const std::string& name, double fuel)
+{
+    for_each(view_container.begin(), view_container.end(),
+             bind(&View::update_fuel, _1, ref(name), ref(fuel)));
+}
+
+void Model::notify_course_speed(const std::string& name, Course_speed cs)
+{
+    for_each(view_container.begin(), view_container.end(),
+             bind(&View::update_course_speed, _1, ref(name), ref(cs)));
+}
+
+
+void Model::notify_speed(const std::string& name, double speed)
+{
+    for_each(view_container.begin(), view_container.end(),
+             bind(&View::update_speed, _1, ref(name), ref(speed)));
+}
+
 
 void Model::notify_gone(const std::string& name)
 {
@@ -156,13 +179,14 @@ void Model::remove_ship(shared_ptr<Ship> ship_ptr)
 
 std::shared_ptr<Island> Model::is_island_position(Point position)
 {
-    auto map_pair_it = find_if(island_container.begin(), island_container.end(), [&position](const pair<string, shared_ptr<Island>>& map_pair){return position == map_pair.second->get_location();});
+    auto map_pair_it = find_if(island_container.begin(), island_container.end(), [&position](const pair<string, shared_ptr<Island> >& map_pair){return position == map_pair.second->get_location();});
     if (map_pair_it == island_container.end())
         return nullptr;
     else
         return map_pair_it->second;
 }
 
+/*
 void Model::get_next_destination(std::vector<shared_ptr<Island>> path)
 {
     shared_ptr<Island> closest_unvisited_island;
@@ -183,19 +207,20 @@ void Model::get_next_destination(std::vector<shared_ptr<Island>> path)
     else
         path.push_back(path.front());
 }
+ */
 
 struct Less_than_distance_islands_comp {
 	bool operator()(const pair<shared_ptr<Island>, double> p1, const pair<shared_ptr<Island>, double> p2) const {return p1.second < p2.second || (p1.second == p2.second && p1.first->get_name() < p2.first->get_name());}
 };
 
-vector<shared_ptr<Island>> Model::islands_ordered_by_distance_to_point(Point position)
+vector<shared_ptr<Island> > Model::islands_ordered_by_distance_to_point(Point position)
 {
     set<pair<shared_ptr<Island>, double>, Less_than_distance_islands_comp> ordered_islands;
     for (auto map_pair : island_container) {
         shared_ptr<Island> island_ptr = map_pair.second;
         ordered_islands.insert(make_pair(island_ptr, cartesian_distance(position, island_ptr->get_location())));
     }
-    vector<shared_ptr<Island>> result;
+    vector<shared_ptr<Island> > result;
     for_each(ordered_islands.begin(), ordered_islands.end(), [&result](const pair<shared_ptr<Island>, double>& map_pair){result.push_back(map_pair.first);});
     return result;
 }

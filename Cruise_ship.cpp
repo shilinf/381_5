@@ -108,7 +108,7 @@ void Cruise_ship::check_cancle_cruise()
 void Cruise_ship::get_next_destination()
 {
     bool visited_all = true;
-    vector<shared_ptr<Island>> islands_ordered_by_distance = Model::get_instance().islands_ordered_by_distance_to_point(path.back()->get_location());
+    vector<shared_ptr<Island> > islands_ordered_by_distance = Model::get_instance().islands_ordered_by_distance_to_point(path.back()->get_location());
     for (auto island_ptr : islands_ordered_by_distance) {
         auto path_it = find_if(path.begin(), path.end(), [&island_ptr](shared_ptr<Island>& path_island_ptr){return island_ptr == path_island_ptr;});
         if (path_it == path.end()) {

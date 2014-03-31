@@ -14,9 +14,9 @@ Ship::Ship(const string& name_, Point position_, double fuel_capacity_,
     Sim_object(name_), fuel_capacity(fuel_capacity_), fuel(fuel_capacity_),
     maximum_speed(maximum_speed_), fuel_consumption(fuel_consumption_), resistance(resistance_), ship_state(STOPPED), track(position_)
 {
+    //Model::get_instance().notify_fuel(name_, fuel);
     cout << "Ship " << name_ << " constructed" << endl;
 }
-
 
 bool Ship::can_move() const
 {
@@ -32,7 +32,6 @@ bool Ship::is_docked() const
 {
     return ship_state == DOCKED;
 }
-
 
 bool Ship::is_afloat() const
 {
@@ -71,12 +70,15 @@ void Ship::describe() const
 void Ship::broadcast_current_state()
 {
     Model::get_instance().notify_location(get_name(), get_location());
+    Model::get_instance().notify_fuel(get_name(), fuel);
+    Model::get_instance().notify_course_speed(get_name(), track.get_course_speed());
 }
 
 void Ship::set_destination_position_and_speed(Point destination_position, double speed)
 {
     destination = destination_position;
     check_course_speed(Compass_vector(get_location(), destination_position).direction, speed);
+    Model::get_instance().notify_course_speed(get_name(), track.get_course_speed());
     cout << get_name() << " will sail on " << track.get_course_speed() << " to " << destination << endl;
     ship_state = MOVING_TO_POSITION;
 }
@@ -84,6 +86,7 @@ void Ship::set_destination_position_and_speed(Point destination_position, double
 void Ship::set_course_and_speed(double course, double speed)
 {
     check_course_speed(course, speed);
+    Model::get_instance().notify_course_speed(get_name(), track.get_course_speed());
     cout << get_name() << " will sail on " << track.get_course_speed() << endl;
     ship_state = MOVING_ON_COURSE;
 }
@@ -103,6 +106,7 @@ void Ship::stop()
     if (!can_move())
         throw Error("Ship cannot move!");
     track.set_speed(0.);
+    Model::get_instance().notify_speed(get_name(), track.get_speed());
     cout << get_name() << " stopping at " << track.get_position() << endl;
     ship_state = STOPPED;
 }
@@ -112,7 +116,7 @@ void Ship::dock(shared_ptr<Island> island_ptr)
     if (!can_dock(island_ptr))
         throw Error("Can't dock!");
     track.set_position(island_ptr->get_location());
-    broadcast_current_state();
+    Model::get_instance().notify_location(get_name(), get_location());
     ship_state = DOCKED;
     cout << get_name() << " docked at " << island_ptr->get_name() << endl;
     docked_at = island_ptr;
@@ -129,6 +133,7 @@ void Ship::refuel()
         fuel += docked_at->provide_fuel(fuel_needed);
         cout << get_name() <<  " now has " << fuel << " tons of fuel" << endl;
     }
+    Model::get_instance().notify_fuel(get_name(), fuel);
 }
 
 void Ship::set_load_destination(shared_ptr<Island>)
@@ -179,7 +184,10 @@ void Ship::update()
             if (is_moving()) {
                 calculate_movement();
                 cout << get_name() << " now at " << get_location() << endl;
-                broadcast_current_state();
+                Model::get_instance().notify_location(get_name(), get_location());
+                Model::get_instance().notify_fuel(get_name(), fuel);
+                Model::get_instance().notify_speed(get_name(), track.get_speed());
+                //broadcast_current_state();
             }
             else if (ship_state == STOPPED)
                 cout << get_name() << " stopped at " << get_location() << endl;

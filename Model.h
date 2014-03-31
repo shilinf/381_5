@@ -5,6 +5,7 @@
 #include <map>
 #include <set>
 #include <vector>
+
 /*
 Model is part of a simplified Model-View-Controller pattern.
 Model keeps track of the Sim_objects in our little world. It is the only
@@ -25,6 +26,7 @@ class Ship;
 class View;
 class Island;
 struct Point;
+struct Course_speed;
 
 
 class Model {
@@ -70,8 +72,20 @@ public:
     // - no updates sent to it thereafter.
 	void detach(std::shared_ptr<View>);
 	
+    
+    
+    
+    
     // notify the views about an object's location
 	void notify_location(const std::string& name, Point location);
+    
+    void notify_fuel(const std::string& name, double fuel);
+    
+    void notify_course_speed(const std::string& name, Course_speed cs);
+    
+    void notify_speed(const std::string& name, double speed);
+    
+    
 	// notify the views that an object is now gone
 	void notify_gone(const std::string& name);
     
@@ -79,18 +93,18 @@ public:
     
     std::shared_ptr<Island> is_island_position(Point position);
 
-	void get_next_destination(std::vector<std::shared_ptr<Island>> path);
+	//void get_next_destination(std::vector<std::shared_ptr<Island>> path);
     
     std::vector<std::shared_ptr<Island>> islands_ordered_by_distance_to_point(Point position);
     
     
 private:
 	int time;		// the simulated time
-    std::map<std::string, std::shared_ptr<Sim_object>> object_container;
-    std::map<std::string, std::shared_ptr<Island>> island_container;
-    std::map<std::string, std::shared_ptr<Ship>> ship_container;
-    std::set<std::shared_ptr<View>> view_container;
-
+    std::map<std::string, std::shared_ptr<Sim_object> > object_container;
+    std::map<std::string, std::shared_ptr<Island> > island_container;
+    std::map<std::string, std::shared_ptr<Ship> > ship_container;
+    std::set<std::shared_ptr<View> > view_container;
+    
     // create the initial objects, output constructor message
 	Model();
     

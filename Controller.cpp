@@ -1,6 +1,6 @@
 #include "Controller.h"
 #include "Model.h"
-#include "View.h"
+#include "Views.h"
 #include "Ship.h"
 #include "Island.h"
 #include "Geometry.h"
@@ -15,6 +15,8 @@ using std::cout; using std::cin; using std::endl;
 using std::map;
 using std::make_pair;
 using std::shared_ptr; using std::make_shared;
+using std::for_each;
+using std::mem_fn;
 
 Controller::Controller()
 {
@@ -31,9 +33,6 @@ void Controller::run()
     
     Command_map_t commands_map;
     load_command_map(commands_map);
-    shared_ptr<View> temp(new View);
-    view_ptr = temp;
-    Model::get_instance().attach(view_ptr);
     
     while (true) {
         cout << "\nTime " << Model::get_instance().get_time() << ": Enter command: ";
@@ -68,6 +67,16 @@ void Controller::run()
 
 void Controller::load_command_map(Command_map_t &commands_map)
 {
+    commands_map.insert(make_pair("open_map_view", &Controller::open_map_view));
+    commands_map.insert(make_pair("close_map_view", &Controller::close_map_view));
+    commands_map.insert(make_pair("open_sailing_view", &Controller::open_sailing_view));
+    commands_map.insert(make_pair("close_sailing_view", &Controller::close_sailing_view));
+    commands_map.insert(make_pair("open_bridge_view", &Controller::open_bridge_view));
+    commands_map.insert(make_pair("close_bridge_view", &Controller::close_bridge_view));
+
+    
+    
+    
     commands_map.insert(make_pair("default", &Controller::restore_default_map));
     commands_map.insert(make_pair("size", &Controller::set_map_size));
     commands_map.insert(make_pair("zoom", &Controller::set_map_scale));
@@ -89,34 +98,115 @@ void Controller::load_command_map(Command_map_t &commands_map)
     commands_map.insert(make_pair("stop_attack", &Controller::set_ship_stop_attack));
 }
 
+void Controller::open_map_view()
+{
+    if (map_view_ptr)
+        throw Error("Map view is already open!");
+    shared_ptr<Map_view> new_map_view(new Map_view);
+    map_view_ptr = new_map_view;
+    draw_view_order.push_back(map_view_ptr);
+    Model::get_instance().attach(map_view_ptr);
+}
+
+
+void Controller::close_map_view()
+{
+    check_map_view_exist();
+    Model::get_instance().detach(map_view_ptr);
+    remove_view(map_view_ptr);
+    map_view_ptr.reset();
+}
+
+void Controller::open_sailing_view()
+{
+    if (sailing_view_ptr)
+        throw Error("Sailing data view is already open!");
+    shared_ptr<Sailing_view> new_sailing_view(new Sailing_view);
+    sailing_view_ptr = new_sailing_view;
+    draw_view_order.push_back(sailing_view_ptr);
+    Model::get_instance().attach(sailing_view_ptr);
+}
+
+void Controller::close_sailing_view()
+{
+    if (!sailing_view_ptr)
+        throw Error("Sailing data view is not open!");
+    Model::get_instance().detach(sailing_view_ptr);
+    remove_view(sailing_view_ptr);
+    sailing_view_ptr.reset();
+}
+
+void Controller::open_bridge_view()
+{
+    string ship_name = read_string();
+    //if (!Model::get_instance().is_ship_present(ship_name))
+    //    throw Error("Ship not found!");
+    shared_ptr<Ship> ship_ptr = Model::get_instance().get_ship_ptr(ship_name);
+    if (bridge_view_container.find(ship_name) != bridge_view_container.end())
+        throw Error("Sailing data view is already open!");
+    shared_ptr<Bridge_view> new_bridge_view(new Bridge_view(ship_name, ship_ptr->get_location()));
+    bridge_view_container.insert(make_pair(ship_name, new_bridge_view));
+    draw_view_order.push_back(new_bridge_view);
+    Model::get_instance().attach(new_bridge_view);
+}
+
+
+void Controller::close_bridge_view()
+{
+    string ship_name = read_string();
+    auto bridge_view_it = bridge_view_container.find(ship_name);
+    if (bridge_view_it == bridge_view_container.end())
+        Error("Sailing data view is not open!");
+    Model::get_instance().detach(bridge_view_it->second);
+    remove_view(bridge_view_it->second);
+    bridge_view_container.erase(bridge_view_it);
+}
+
+
+
 void Controller::restore_default_map()
 {
-    view_ptr->set_defaults();
+    check_map_view_exist();
+    map_view_ptr->set_defaults();
 }
 
 void Controller::set_map_size()
 {
+    check_map_view_exist();
     int size;
     if (!(cin >> size))
         throw Error("Expected an integer!");
-    view_ptr->set_size(size);
+    map_view_ptr->set_size(size);
 }
 
 void Controller::set_map_scale()
 {
+    check_map_view_exist();
     double scale = read_double();
-    view_ptr->set_scale(scale);
+    map_view_ptr->set_scale(scale);
 }
 
 void Controller::set_map_origin()
 {
-    view_ptr->set_origin(read_point());
+    check_map_view_exist();
+    map_view_ptr->set_origin(read_point());
 }
 
+
+
+// draw all the exist maps
 void Controller::draw_map()
 {
-    view_ptr->draw();
+    for_each(draw_view_order.begin(), draw_view_order.end(), mem_fn(&View::draw));
 }
+
+
+void Controller::check_map_view_exist()
+{
+    if (!map_view_ptr)
+        throw Error("Map view is not open!");
+}
+
 
 void Controller::show_object_status()
 {
@@ -130,8 +220,7 @@ void Controller::update_all_objects()
 
 void Controller::create_new_ship()
 {
-    string name;
-    cin >> name;
+    string name = read_string();
     if (name.length() < 2)
         throw Error("Name is too short!");
     if (Model::get_instance().is_name_in_use(name))
@@ -183,8 +272,7 @@ void Controller::set_ship_dock_island()
 
 void Controller::set_ship_attack_target()
 {
-    string ship_name;
-    cin >> ship_name;
+    string ship_name = read_string();
     shared_ptr<Ship> attack_ship = Model::get_instance().get_ship_ptr(ship_name);
     target_ship->attack(attack_ship);
 }
@@ -207,7 +295,6 @@ void Controller::set_ship_stop_attack()
 
 void Controller::quit()
 {
-    Model::get_instance().detach(view_ptr);
     cout << "Done" << endl;
 }
 
@@ -247,9 +334,29 @@ double Controller::read_double()
     return temp;
 }
 
+string Controller::read_string()
+{
+    string read_string;
+    cin>>read_string;
+    return read_string;
+}
+
 shared_ptr<Island> Controller::read_get_island()
 {
-    string island_name;
-    cin >> island_name;
+    string island_name = read_string();
     return Model::get_instance().get_island_ptr(island_name);
 }
+
+void Controller::remove_view(std::shared_ptr<View> view)
+{
+    auto view_it = find_if(draw_view_order.begin(), draw_view_order.end(), [&view](shared_ptr<View> view_ptr){return view_ptr == view;});
+    draw_view_order.erase(view_it);
+}
+
+
+
+
+
+
+
+
