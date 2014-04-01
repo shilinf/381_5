@@ -157,7 +157,7 @@ void Controller::close_bridge_view()
     string ship_name = read_string();
     auto bridge_view_it = bridge_view_container.find(ship_name);
     if (bridge_view_it == bridge_view_container.end())
-        Error("Sailing data view is not open!");
+    	throw Error("Sailing data view is not open!");
     Model::get_instance().detach(bridge_view_it->second);
     remove_view(bridge_view_it->second);
     bridge_view_container.erase(bridge_view_it);
