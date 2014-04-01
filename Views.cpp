@@ -14,7 +14,22 @@ using std::string;
 using std::ios; using std::setw;
 using std::streamsize;
 
+const int axes_label_gap = 3;
+const int label_width = 4;
+const int sailing_view_field_width = 10;
 
+class Cout_format_saver {
+public:
+    Cout_format_saver() :
+    old_flags(cout.flags()), old_precision(cout.precision()) {}
+    ~Cout_format_saver() {
+        cout.flags(old_flags);
+        cout.precision(old_precision);
+    }
+private:
+    ios::fmtflags old_flags;
+    streamsize old_precision;
+};
 
 
 Map_view::Map_view()
@@ -87,25 +102,23 @@ void Map_view::draw()
     }
     if (exist_out_of_map)
         cout << " outside the map" << endl;
-    ios::fmtflags old_settings = cout.flags(); //save previous format flags
-    streamsize old_precision = cout.precision();
-    cout.setf(ios::fixed, ios::floatfield); // set fixed floating format
+    Cout_format_saver cfs;
     cout.precision(0);
     for (int i = 0; i < size; i++) {
-        if ((size - i) % 3 == 1)
-            cout << setw(4) << origin.y + scale * (size - i - 1) << ' ';
+        cout << setw(label_width);
+        if ((size - i) % axes_label_gap == 1)
+            cout << origin.y + scale * (size - i - 1);
         else
-            cout << "     ";
+            cout << "";
+        cout << ' ';
         for (int j = 0; j < size; j++)
             cout << output[j][size - i - 1];
         cout << endl;
     }
-    for (int i = 0; i <= (size-1)/3 ; i++) {
-        cout << "  " << setw(4) << origin.x + 3 * scale * i;
+    for (int i = 0; i <= (size-1)/axes_label_gap ; i++) {
+        cout << "  " << setw(label_width) << origin.x + axes_label_gap * scale * i;
     }
     cout << endl;
-    cout.flags(old_settings);
-    cout.precision(old_precision);
 }
 
 void Map_view::clear()
@@ -180,9 +193,9 @@ void Sailing_view::update_remove(const std::string& name)
 void Sailing_view::draw()
 {
     cout << "----- Sailing Data -----" << endl;
-    cout << setw(10) << "Ship" << setw(10) << "Fuel" << setw(10) << "Course" << setw(10) << "Speed" << endl;
+    cout << setw(sailing_view_field_width) << "Ship" << setw(sailing_view_field_width) << "Fuel" << setw(sailing_view_field_width) << "Course" << setw(sailing_view_field_width) << "Speed" << endl;
     for (auto map_pair : ships_info)
-        cout << setw(10) << map_pair.first << setw(10) << map_pair.second.fuel << setw(10) << map_pair.second.cs.course << setw(10) << map_pair.second.cs.speed << endl;
+        cout << setw(sailing_view_field_width) << map_pair.first << setw(sailing_view_field_width) << map_pair.second.fuel << setw(sailing_view_field_width) << map_pair.second.cs.course << setw(sailing_view_field_width) << map_pair.second.cs.speed << endl;
 }
 
 void Sailing_view::clear()
@@ -245,28 +258,18 @@ void Bridge_view::draw()
         }
     }
     
-    for (int i = 0 ; i < 3; i++) {
-        cout << "     ";
+    for (int i = 0 ; i < axes_label_gap; i++) {
+        cout << setw(label_width) << "" << ' ';
         for (int j = 0; j < 19; j++)
             cout << output[i][j];
         cout << endl;
     }
-    
-    ios::fmtflags old_settings = cout.flags(); //save previous format flags
-    streamsize old_precision = cout.precision();
-    cout.setf(ios::fixed, ios::floatfield); // set fixed floating format
+    Cout_format_saver cfs;
     cout.precision(0);
-
-    
-    
     for (int i = 0; i <= 6 ; i++) {
-        cout << "  " << setw(4) << -90 + 3 * 10 * i;
+        cout << "  " << setw(label_width) << -90 + axes_label_gap * 10 * i;
     }
     cout << endl;
-    cout.flags(old_settings);
-    cout.precision(old_precision);
-
-
 }
 
 // Discard the saved information - drawing will show only a empty pattern
@@ -290,12 +293,5 @@ bool Bridge_view::compute_subscribt(double bearing, int &x)
 	else
 		return true;
 }
-
-
-
-
-
-
-
 
 

@@ -103,8 +103,6 @@ void Cruise_ship::check_cancle_cruise()
 }
 
 
-
-
 void Cruise_ship::get_next_destination()
 {
     bool visited_all = true;
