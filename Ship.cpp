@@ -13,10 +13,7 @@ Ship::Ship(const string& name_, Point position_, double fuel_capacity_,
            double maximum_speed_, double fuel_consumption_, int resistance_) :
     Sim_object(name_), fuel_capacity(fuel_capacity_), fuel(fuel_capacity_),
     maximum_speed(maximum_speed_), fuel_consumption(fuel_consumption_), resistance(resistance_), ship_state(STOPPED), track(position_)
-{
-    //Model::get_instance().notify_fuel(name_, fuel);
-    //cout << "Ship " << name_ << " constructed" << endl;
-}
+    {}
 
 bool Ship::can_move() const
 {
@@ -48,6 +45,32 @@ bool Ship::can_dock(shared_ptr<Island> island_ptr) const
 void Ship::describe() const
 {
     cout << get_name() << " at " << get_location();
+    if (ship_state != SUNK)
+        cout << ", fuel: " << fuel << " tons, resistance: " << resistance << endl;
+    switch (ship_state) {
+        case SUNK:
+            cout << " sunk" << endl;
+            break;
+        case MOVING_TO_POSITION:
+            cout << "Moving to " << destination << " on " << track.get_course_speed() << endl;
+            break;
+        case STOPPED:
+            cout << "Stopped" << endl;
+            break;
+        case DEAD_IN_THE_WATER:
+            cout << "Dead in the water" << endl;
+            break;
+        case MOVING_ON_COURSE:
+            cout << "Moving on " << track.get_course_speed() << endl;
+            break;
+        case DOCKED:
+            cout << "Docked at " << docked_at->get_name() << endl;
+            break;
+        default:
+            break;
+    }
+    
+    /*
     if (ship_state == SUNK)
         cout << " sunk" << endl;
     else {
@@ -62,7 +85,7 @@ void Ship::describe() const
             cout << "Moving on " << track.get_course_speed() << endl;
         else if (ship_state == DOCKED)
             cout << "Docked at " << docked_at->get_name() << endl;
-    }
+    }*/
 }
 
 
