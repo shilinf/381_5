@@ -16,9 +16,12 @@ public:
 	// initialize, then output constructor message
 	Warship(const std::string& name_, Point position_, double fuel_capacity_, 
 		double maximum_speed_, double fuel_consumption_, int resistance_,
-		int firepower_, double maximum_range_);
+        int firepower_, double maximum_range_) :
+        Ship(name_, position_, fuel_capacity_, maximum_speed_, fuel_consumption_, resistance_),
+    firepower(firepower_), maximum_range(maximum_range_), warship_state(NOT_ATTACKING) {}
 
-	// a pure virtual function to mark this as an abstract class, 
+
+	// a pure virtual function to mark this as an abstract class,
 	// but defined anyway to output destructor message
 	virtual ~Warship() = 0;
 	
@@ -57,7 +60,6 @@ private:
     int firepower;
     double maximum_range;
     Warship_state_e warship_state;
-    
     std::weak_ptr<Ship> target_ptr;
 };
 

@@ -21,10 +21,8 @@ class Island;
 
 class Tanker : public Ship {
 public:
-	// initialize, the output constructor message
-	Tanker(const std::string& name_, Point position_);
-	// output destructor message
-	~Tanker();
+	// initialize
+	Tanker(const std::string& name_, Point position_) : Ship(name_, position_, 100., 10., 2., 0), cargo_capacity(1000.), cargo(0.), tanker_state(NO_CARGO_DESTINATIONS), load_destination(nullptr), unload_destination(nullptr) {}
 	
 	// This class overrides these Ship functions so that it can check if this Tanker has assigned cargo destinations.
 	// if so, throw an Error("Tanker has cargo destinations!"); otherwise, simply call the Ship functions.

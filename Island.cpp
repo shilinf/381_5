@@ -6,15 +6,7 @@
 using std::string;
 using std::cout; using std::endl;
 
-Island::Island (const string& name_, Point position_, double fuel_, double production_rate_) : Sim_object(name_), position(position_), fuel(fuel_), production_rate(production_rate_)
-{
-    //cout << "Island " << name_ << " constructed" << endl;
-}
-
-Island::~Island()
-{
-    //cout << "Island " << get_name() << " destructed" << endl;
-}
+Island::Island (const string& name_, Point position_, double fuel_, double production_rate_) : Sim_object(name_), position(position_), fuel(fuel_), production_rate(production_rate_) {}
 
 double Island::provide_fuel(double request)
 {
@@ -36,15 +28,11 @@ void Island::update()
         accept_fuel(production_rate);
 }
 
-
-
 void Island::describe() const
 {
     cout << "\nIsland " << get_name() << " at position " << position << endl;
     cout << "Fuel available: " << fuel << " tons" << endl;
 }
-
-
 
 void Island::broadcast_current_state()
 {

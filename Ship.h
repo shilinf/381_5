@@ -28,8 +28,11 @@ class Island;
 class Ship : public Sim_object, public std::enable_shared_from_this<Ship> {
 public:
 	// initialize, then output constructor message
-	Ship(const std::string& name_, Point position_, double fuel_capacity_, 
-		double maximum_speed_, double fuel_consumption_, int resistance_);
+	Ship(const std::string& name_, Point position_, double fuel_capacity_,
+        double maximum_speed_, double fuel_consumption_, int resistance_) :
+        Sim_object(name_), fuel_capacity(fuel_capacity_), fuel(fuel_capacity_),
+        maximum_speed(maximum_speed_), fuel_consumption(fuel_consumption_),
+        resistance(resistance_), ship_state(STOPPED), track(position_) {}
 		
 	// made pure virtual to mark this class as abstract
 	virtual ~Ship() = 0;
@@ -113,8 +116,8 @@ private:
     int resistance;
     Ship_state_e ship_state;
     Point destination;					// Current destination if any
-    std::shared_ptr<Island>docked_at;
     Track_base track;
+    std::shared_ptr<Island>docked_at;
 
 	// Updates position, fuel, and movement_state, assuming 1 time unit (1 hr)
 	void calculate_movement();

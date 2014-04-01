@@ -9,10 +9,13 @@ using std::cout; using std::endl;
 using std::shared_ptr;
 
 
-Ship::Ship(const string& name_, Point position_, double fuel_capacity_,
-           double maximum_speed_, double fuel_consumption_, int resistance_) :
-    Sim_object(name_), fuel_capacity(fuel_capacity_), fuel(fuel_capacity_),
-    maximum_speed(maximum_speed_), fuel_consumption(fuel_consumption_), resistance(resistance_), ship_state(STOPPED), track(position_) {}
+/*
+ Define the destructor function even if it was declared as a pure virtual function.
+ This seems odd, because pure virtual functions are usually not defined in the class
+ that declares them. But this is often done as a way to make a class abstract,
+ if there is no other virtual function that makes sense to mark as pure. 
+ */
+Ship::~Ship() {}
 
 bool Ship::can_move() const
 {
@@ -172,13 +175,10 @@ void Ship::receive_hit(int hit_force, shared_ptr<Ship> attacker_ptr)
     }
 }
 
-
 shared_ptr<Island> Ship::get_docked_Island() const
 {
     return (ship_state == DOCKED) ? docked_at : nullptr;
 }
-
-
 
 void Ship::update()
 {
@@ -207,17 +207,6 @@ void Ship::update()
             break;
     }
 }
-
-
-/*
-Define the destructor function even if it was declared as a pure virtual function.
-This seems odd, because pure virtual functions are usually not defined in the class
-that declares them. But this is often done as a way to make a class abstract, 
-if there is no other virtual function that makes sense to mark as pure. Here we
-are defining it just to get the destructor message output.
-*/
-
-Ship::~Ship() {}
 
 /* Private Function Definitions */
 

@@ -20,11 +20,9 @@ resistance 6, firepower 3, maximum attacking range 15
 
 class Cruiser : public Warship {
 public:
-	// initialize, then output constructor message
-	Cruiser(const std::string& name_, Point position_);
-	// output destructor message
-	~Cruiser();
-
+	// initialize
+	Cruiser(const std::string& name_, Point position_) : Warship(name_, position_, 1000., 20., 10., 6, 3, 15.) {}
+    
 	void update() override;
 	void describe() const override;
     void receive_hit(int hit_force, std::shared_ptr<Ship> attacker_ptr) override;
