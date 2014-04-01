@@ -224,9 +224,12 @@ void Bridge_view::update_remove(const std::string& name)
 void Bridge_view::draw()
 {
     vector< vector<string> > output;
-    if (sunk)
+    if (sunk) {
+        cout << "Bridge view from " << ownship_name << " sunk at " << ownship_location << endl;
         output = vector< vector<string> >(3, vector<string>(19, "w-"));
+    }
     else {
+        cout << "Bridge view from " << ownship_name <<  " position " << ownship_location << " heading " << ownship_course << endl;
         output = vector< vector<string> >(3, vector<string>(19, ". "));
         for (auto map_pair : points) {
             Compass_position relative_position(ownship_location, map_pair.second);
@@ -241,10 +244,11 @@ void Bridge_view::draw()
             }
         }
     }
+    
     for (int i = 0 ; i < 3; i++) {
         cout << "     ";
         for (int j = 0; j < 19; j++)
-            cout << output[j][i];
+            cout << output[i][j];
         cout << endl;
     }
     
