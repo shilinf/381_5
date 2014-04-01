@@ -31,8 +31,7 @@ public:
 	Ship(const std::string& name_, Point position_, double fuel_capacity_, 
 		double maximum_speed_, double fuel_consumption_, int resistance_);
 		
-	// made pure virtual to mark this class as abstract, but defined anyway
-	// to output destructor message
+	// made pure virtual to mark this class as abstract
 	virtual ~Ship() = 0;
 	
 	/*** Readers ***/

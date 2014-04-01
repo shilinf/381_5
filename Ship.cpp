@@ -12,8 +12,7 @@ using std::shared_ptr;
 Ship::Ship(const string& name_, Point position_, double fuel_capacity_,
            double maximum_speed_, double fuel_consumption_, int resistance_) :
     Sim_object(name_), fuel_capacity(fuel_capacity_), fuel(fuel_capacity_),
-    maximum_speed(maximum_speed_), fuel_consumption(fuel_consumption_), resistance(resistance_), ship_state(STOPPED), track(position_)
-    {}
+    maximum_speed(maximum_speed_), fuel_consumption(fuel_consumption_), resistance(resistance_), ship_state(STOPPED), track(position_) {}
 
 bool Ship::can_move() const
 {
@@ -41,7 +40,6 @@ bool Ship::can_dock(shared_ptr<Island> island_ptr) const
 }
 
 
-// consider switch here?????
 void Ship::describe() const
 {
     cout << get_name() << " at " << get_location();
@@ -69,23 +67,6 @@ void Ship::describe() const
         default:
             break;
     }
-    
-    /*
-    if (ship_state == SUNK)
-        cout << " sunk" << endl;
-    else {
-        cout << ", fuel: " << fuel << " tons, resistance: " << resistance << endl;
-        if (ship_state == MOVING_TO_POSITION)
-            cout << "Moving to " << destination << " on " << track.get_course_speed() << endl;
-        else if (ship_state == STOPPED)
-            cout << "Stopped" << endl;
-        else if (ship_state == DEAD_IN_THE_WATER)
-            cout << "Dead in the water" << endl;
-        else if (ship_state == MOVING_ON_COURSE)
-            cout << "Moving on " << track.get_course_speed() << endl;
-        else if (ship_state == DOCKED)
-            cout << "Docked at " << docked_at->get_name() << endl;
-    }*/
 }
 
 
@@ -140,9 +121,9 @@ void Ship::dock(shared_ptr<Island> island_ptr)
         throw Error("Can't dock!");
     track.set_position(island_ptr->get_location());
     Model::get_instance().notify_location(get_name(), get_location());
-    ship_state = DOCKED;
     cout << get_name() << " docked at " << island_ptr->get_name() << endl;
     docked_at = island_ptr;
+    ship_state = DOCKED;
 }
 
 void Ship::refuel()
@@ -186,7 +167,6 @@ void Ship::receive_hit(int hit_force, shared_ptr<Ship> attacker_ptr)
     if (resistance < 0.) {
         cout << get_name() << " sunk" << endl;
         ship_state = SUNK;
-        //track.set_speed(0.);
         Model::get_instance().notify_gone(get_name());
         Model::get_instance().remove_ship(shared_from_this());
     }
@@ -199,27 +179,33 @@ shared_ptr<Island> Ship::get_docked_Island() const
 }
 
 
-// use switch here!!!
+
 void Ship::update()
 {
-    if (is_afloat()) {
-            if (is_moving()) {
-                calculate_movement();
-                cout << get_name() << " now at " << get_location() << endl;
-                Model::get_instance().notify_location(get_name(), get_location());
-                Model::get_instance().notify_fuel(get_name(), fuel);
-                Model::get_instance().notify_speed(get_name(), track.get_speed());
-                //broadcast_current_state();
-            }
-            else if (ship_state == STOPPED)
-                cout << get_name() << " stopped at " << get_location() << endl;
-            else if (is_docked())
-                cout <<  get_name() << " docked at " << docked_at->get_name() << endl;
-            else if (ship_state == DEAD_IN_THE_WATER)
-                cout <<  get_name() << " dead in the water at " << get_location() << endl;
+    switch (ship_state) {
+        case MOVING_TO_POSITION:
+        case MOVING_ON_COURSE:
+            calculate_movement();
+            cout << get_name() << " now at " << get_location() << endl;
+            Model::get_instance().notify_location(get_name(), get_location());
+            Model::get_instance().notify_fuel(get_name(), fuel);
+            Model::get_instance().notify_speed(get_name(), track.get_speed());
+            break;
+        case STOPPED:
+            cout << get_name() << " stopped at " << get_location() << endl;
+            break;
+        case DOCKED:
+            cout <<  get_name() << " docked at " << docked_at->get_name() << endl;
+            break;
+        case DEAD_IN_THE_WATER:
+            cout <<  get_name() << " dead in the water at " << get_location() << endl;
+            break;
+        case SUNK:
+            cout << get_name() << " sunk" << endl;
+            break;
+        default:
+            break;
     }
-    else if (ship_state == SUNK)
-        cout << get_name() << " sunk" << endl;
 }
 
 
@@ -231,10 +217,7 @@ if there is no other virtual function that makes sense to mark as pure. Here we
 are defining it just to get the destructor message output.
 */
 
-Ship::~Ship()
-{
-	//cout << "Ship "  << get_name() << " destructed" << endl;
-}
+Ship::~Ship() {}
 
 /* Private Function Definitions */
 
