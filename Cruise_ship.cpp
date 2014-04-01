@@ -57,7 +57,7 @@ void Cruise_ship::update()
 
 void Cruise_ship::describe() const
 {
-    cout << "\nCruise_ship " << endl;
+    cout << "\nCruise_ship ";
     Ship::describe();
     if (cruise_state == MOVING)
         cout << "On cruise to " << path.back()->get_name() << endl;
@@ -69,14 +69,16 @@ void Cruise_ship::describe() const
 void Cruise_ship::set_destination_position_and_speed(Point destination, double speed)
 {
     shared_ptr<Island> island_ptr = Model::get_instance().is_island_position(destination);
+    Ship::set_destination_position_and_speed(destination, speed);
     if (!island_ptr)
         check_cancle_cruise();
     else {
+        cruise_state = MOVING;
+        cout << get_name() << " will visit " << island_ptr->get_name() << endl;
         cout << get_name() <<  " cruise will start and end at " << island_ptr->get_name() << endl;
         cruise_speed = speed;
         path.push_back(island_ptr);
     }
-    Ship::set_destination_position_and_speed(destination, speed);
 }
 
 
