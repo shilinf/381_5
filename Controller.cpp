@@ -144,7 +144,7 @@ void Controller::open_bridge_view()
     //    throw Error("Ship not found!");
     shared_ptr<Ship> ship_ptr = Model::get_instance().get_ship_ptr(ship_name);
     if (bridge_view_container.find(ship_name) != bridge_view_container.end())
-        throw Error("Sailing data view is already open!");
+        throw Error("Bridge view is already open for that ship!");
     shared_ptr<Bridge_view> new_bridge_view(new Bridge_view(ship_name, ship_ptr->get_location()));
     bridge_view_container.insert(make_pair(ship_name, new_bridge_view));
     draw_view_order.push_back(new_bridge_view);
@@ -157,7 +157,7 @@ void Controller::close_bridge_view()
     string ship_name = read_string();
     auto bridge_view_it = bridge_view_container.find(ship_name);
     if (bridge_view_it == bridge_view_container.end())
-    	throw Error("Sailing data view is not open!");
+    	throw Error("Bridge view for that ship is not open!");
     Model::get_instance().detach(bridge_view_it->second);
     remove_view(bridge_view_it->second);
     bridge_view_container.erase(bridge_view_it);
