@@ -70,9 +70,8 @@ void Cruise_ship::set_destination_position_and_speed(Point destination, double s
 {
     shared_ptr<Island> island_ptr = Model::get_instance().is_island_position(destination);
     Ship::set_destination_position_and_speed(destination, speed);
-    if (!island_ptr)
-        check_cancle_cruise();
-    else {
+    check_cancle_cruise();
+    if (island_ptr) {
         cruise_state = MOVING;
         cout << get_name() << " will visit " << island_ptr->get_name() << endl;
         cout << get_name() <<  " cruise will start and end at " << island_ptr->get_name() << endl;
