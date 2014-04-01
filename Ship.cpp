@@ -163,11 +163,10 @@ void Ship::receive_hit(int hit_force, shared_ptr<Ship> attacker_ptr)
     if (resistance < 0.) {
         cout << get_name() << " sunk" << endl;
         ship_state = SUNK;
-        track.set_speed(0.);
+        //track.set_speed(0.);
         Model::get_instance().notify_gone(get_name());
-        Model::get_instance().remove_ship(shared_ptr<Ship>(this));
+        Model::get_instance().remove_ship(shared_from_this());
     }
-    
 }
 
 

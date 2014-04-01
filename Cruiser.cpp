@@ -18,9 +18,6 @@ Cruiser::~Cruiser()
 void Cruiser::update()
 {
     Warship::update();
-    
-    cout << get_name() <<"here" << endl;
-    
     if (is_attacking()) {
         if (target_in_range())
             fire_at_target();

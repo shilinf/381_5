@@ -25,7 +25,7 @@ functions are implemented in this class to throw an Error exception.
 
 class Island;
 
-class Ship : public Sim_object {
+class Ship : public Sim_object, public std::enable_shared_from_this<Ship> {
 public:
 	// initialize, then output constructor message
 	Ship(const std::string& name_, Point position_, double fuel_capacity_, 
