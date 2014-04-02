@@ -1,6 +1,7 @@
 #ifndef MODEL_H
 #define MODEL_H
 
+#include "Utility.h"
 #include <string>
 #include <map>
 #include <set>
@@ -92,11 +93,8 @@ public:
     
     void remove_ship(std::shared_ptr<Ship> ship_ptr);
     
-    std::shared_ptr<Island> is_island_position(Point position);
-
-	//void get_next_destination(std::vector<std::shared_ptr<Island>> path);
     
-    std::vector<std::shared_ptr<Island>> islands_ordered_by_distance_to_point(Point position);
+    std::set<std::shared_ptr<Island>, Island_comp> get_all_islands();
     
     
 private:

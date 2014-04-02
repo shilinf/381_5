@@ -3,14 +3,16 @@
 
 
 #include "Ship.h"
+#include "Utility.h"
 #include <vector>
+#include <set>
 #include <memory>
 
 class Island;
 
 class Cruise_ship : public Ship {
 public:
-	Cruise_ship(const std::string& name_, Point position_) : Ship(name_, position_, 500., 15., 2., 0), cruise_state(NO_DESTINATION) {}
+	Cruise_ship(const std::string& name_, Point position_);
     
     void set_destination_position_and_speed(Point destination, double speed) override;
     
@@ -23,13 +25,16 @@ public:
 	void describe() const override;
     
 private:
-    enum Cruise_state_e {NO_DESTINATION, MOVING, REFUEL, WAIT, FIND_NEXT_ISLAND};
+    enum Cruise_state_e {NO_DESTINATION, MOVING, REFUEL, WAIT, FIND_NEXT_ISLAND, MOVING_TO_START_ISLAND};
     Cruise_state_e cruise_state;
-    std::vector<std::shared_ptr<Island> > path;
+    std::shared_ptr<Island> start_island;
+    std::shared_ptr<Island> current_destination;
+    std::set<std::shared_ptr<Island>, Island_comp> remaining_islands;
+    std::set<std::shared_ptr<Island>, Island_comp> islands;
     double cruise_speed;
-    
     void check_cancle_cruise();
     void get_next_destination();
+    std::shared_ptr<Island> is_island_position(Point position);
 };
 
 

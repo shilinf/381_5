@@ -177,53 +177,17 @@ void Model::remove_ship(shared_ptr<Ship> ship_ptr)
     object_container.erase(object_container.find(key));
 }
 
-std::shared_ptr<Island> Model::is_island_position(Point position)
+
+
+set<shared_ptr<Island>, Island_comp> Model::get_all_islands()
 {
-    auto map_pair_it = find_if(island_container.begin(), island_container.end(), [&position](const pair<string, shared_ptr<Island> >& map_pair){return position == map_pair.second->get_location();});
-    if (map_pair_it == island_container.end())
-        return nullptr;
-    else
-        return map_pair_it->second;
+    set<shared_ptr<Island>, Island_comp> all_islands;
+    for (auto map_pair : island_container)
+        all_islands.insert(map_pair.second);
+    return all_islands;
 }
 
-/*
-void Model::get_next_destination(std::vector<shared_ptr<Island>> path)
-{
-    shared_ptr<Island> closest_unvisited_island;
-    double closest_distance = numeric_limits<double>::max();
-    for (auto map_pair : island_container) {
-        shared_ptr<Island> island_ptr = map_pair.second;
-        auto path_it = find_if(path.begin(), path.end(), [&island_ptr](shared_ptr<Island>& path_island_ptr){return island_ptr == path_island_ptr;});
-        if (path_it == path.end()) {
-            double distance = cartesian_distance(path.back()->get_location(), island_ptr->get_location());
-            if (distance < closest_distance) {
-                closest_unvisited_island = island_ptr;
-                closest_distance = distance;
-            }
-        }
-    }
-    if (closest_distance != numeric_limits<double>::max())
-        path.push_back(closest_unvisited_island);
-    else
-        path.push_back(path.front());
-}
- */
 
-struct Less_than_distance_islands_comp {
-	bool operator()(const pair<shared_ptr<Island>, double> p1, const pair<shared_ptr<Island>, double> p2) const {return p1.second < p2.second || (p1.second == p2.second && p1.first->get_name() < p2.first->get_name());}
-};
-
-vector<shared_ptr<Island> > Model::islands_ordered_by_distance_to_point(Point position)
-{
-    set<pair<shared_ptr<Island>, double>, Less_than_distance_islands_comp> ordered_islands;
-    for (auto map_pair : island_container) {
-        shared_ptr<Island> island_ptr = map_pair.second;
-        ordered_islands.insert(make_pair(island_ptr, cartesian_distance(position, island_ptr->get_location())));
-    }
-    vector<shared_ptr<Island> > result;
-    for_each(ordered_islands.begin(), ordered_islands.end(), [&result](const pair<shared_ptr<Island>, double>& map_pair){result.push_back(map_pair.first);});
-    return result;
-}
 
 
 

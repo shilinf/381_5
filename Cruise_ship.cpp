@@ -11,6 +11,14 @@ using std::shared_ptr;
 using std::vector;
 using std::find_if;
 
+
+Cruise_ship::Cruise_ship(const std::string& name_, Point position_) : Ship(name_, position_, 500., 15., 2., 0), cruise_state(NO_DESTINATION)
+{
+    islands = Model::get_instance().get_all_islands();
+}
+
+
+
 void Cruise_ship::update()
 {
     Ship::update();
@@ -22,15 +30,15 @@ void Cruise_ship::update()
         case NO_DESTINATION:
             break;
         case MOVING:
-            if (!is_moving() && can_dock(path.back())) {
-                dock(path.back());
-                if(path.front() != path.back() || path.size() <= 1)
-                    cruise_state = REFUEL;
-                else {
-                    cout << get_name() << " cruise is over at " << path.back()->get_name() << endl;
-                    cruise_state = NO_DESTINATION;
-                    path.clear();
-                }
+            if (!is_moving() && can_dock(current_destination)) {
+                dock(current_destination);
+                cruise_state = REFUEL;
+            }
+            break;
+        case MOVING_TO_START_ISLAND:
+            if (!is_moving() && can_dock(current_destination)) {
+                cout << get_name() << " cruise is over at " << start_island->get_name() << endl;
+                cruise_state = NO_DESTINATION;
             }
             break;
         case REFUEL:
@@ -42,9 +50,8 @@ void Cruise_ship::update()
             break;
         case FIND_NEXT_ISLAND:
             get_next_destination();
-            Ship::set_destination_position_and_speed(path.back()->get_location(), cruise_speed);
             cruise_state = MOVING;
-            cout << get_name() << " will visit " << path.back()->get_name() << endl;
+            cout << get_name() << " will visit " << current_destination->get_name() << endl;
             break;
         default:
             break;
@@ -55,24 +62,27 @@ void Cruise_ship::describe() const
 {
     cout << "\nCruise_ship ";
     Ship::describe();
-    if (cruise_state == MOVING)
-        cout << "On cruise to " << path.back()->get_name() << endl;
+    if (cruise_state == MOVING || cruise_state == MOVING_TO_START_ISLAND)
+        cout << "On cruise to " << current_destination->get_name() << endl;
     else if(cruise_state != NO_DESTINATION)
-        cout << "Waiting during cruise at " << path.back()->get_name() << endl;
+        cout << "Waiting during cruise at " << current_destination->get_name() << endl;
 }
 
 
 void Cruise_ship::set_destination_position_and_speed(Point destination, double speed)
 {
     check_cancle_cruise();
-    shared_ptr<Island> island_ptr = Model::get_instance().is_island_position(destination);
+    shared_ptr<Island> island_ptr = is_island_position(destination);
     Ship::set_destination_position_and_speed(destination, speed);
     if (island_ptr) {
         cruise_state = MOVING;
         cout << get_name() << " will visit " << island_ptr->get_name() << endl;
         cout << get_name() <<  " cruise will start and end at " << island_ptr->get_name() << endl;
         cruise_speed = speed;
-        path.push_back(island_ptr);
+        start_island = island_ptr;
+        current_destination = island_ptr;
+        remaining_islands = islands;
+        remaining_islands.erase(island_ptr);
     }
 }
 
@@ -98,27 +108,39 @@ void Cruise_ship::check_cancle_cruise()
     if (cruise_state != NO_DESTINATION) {
         cout << get_name() << " canceling current cruise" << endl;
         cruise_state = NO_DESTINATION;
-        path.clear();
     }
 }
 
 
 void Cruise_ship::get_next_destination()
 {
-    bool visited_all = true;
-    vector<shared_ptr<Island> > islands_ordered_by_distance = Model::get_instance().islands_ordered_by_distance_to_point(path.back()->get_location());
-    for (auto island_ptr : islands_ordered_by_distance) {
-        auto path_it = find_if(path.begin(), path.end(), [&island_ptr](shared_ptr<Island>& path_island_ptr){return island_ptr == path_island_ptr;});
-        if (path_it == path.end()) {
-            path.push_back(island_ptr);
-            visited_all = false;
-            break;
+    if (remaining_islands.size() == 0) {
+        cruise_state = MOVING_TO_START_ISLAND;
+        current_destination = start_island;
+        return;
+    }
+    shared_ptr<Island> closest_unvisited_island = *remaining_islands.begin();
+    double closest_distance = cartesian_distance(current_destination->get_location(), closest_unvisited_island->get_location());
+    for (auto island_ptr : remaining_islands) {
+        double distance = cartesian_distance(current_destination->get_location(), island_ptr->get_location());
+        if (distance < closest_distance) {
+            closest_unvisited_island = island_ptr;
+            closest_distance = distance;
         }
     }
-    if (visited_all)
-        path.push_back(path.front());
+    current_destination = closest_unvisited_island;
+    cruise_state = MOVING;
 }
 
+
+std::shared_ptr<Island> Cruise_ship::is_island_position(Point position)
+{
+    auto set_it = find_if(islands.begin(), islands.end(), [&position](const shared_ptr<Island> island_ptr){return position == island_ptr->get_location();});
+    if (set_it == islands.end())
+        return nullptr;
+    else
+        return *set_it;
+}
 
 
 
