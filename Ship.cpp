@@ -3,6 +3,7 @@
 #include "Utility.h"
 #include "Model.h"
 #include <iostream>
+#include <cassert>
 
 using std::string;
 using std::cout; using std::endl;
@@ -68,6 +69,7 @@ void Ship::describe() const
             cout << "Docked at " << docked_at->get_name() << endl;
             break;
         default:
+            assert(false);
             break;
     }
 }
@@ -204,6 +206,7 @@ void Ship::update()
             cout << get_name() << " sunk" << endl;
             break;
         default:
+            assert(false);
             break;
     }
 }

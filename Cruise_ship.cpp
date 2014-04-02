@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <cassert>
 
 
 using std::cout; using std::endl;
@@ -55,6 +56,7 @@ void Cruise_ship::update()
             cout << get_name() << " will visit " << current_destination->get_name() << endl;
             break;
         default:
+            assert(false);
             break;
     }
 }

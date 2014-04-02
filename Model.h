@@ -33,7 +33,6 @@ struct Course_speed;
 
 class Model {
 public:
-
     static Model& get_instance();
     
 	// return the current time
@@ -73,9 +72,6 @@ public:
 	// Detach the View by discarding the supplied pointer from the container of Views
     // - no updates sent to it thereafter.
 	void detach(std::shared_ptr<View>);
-	
-    
-    
     
     
     // notify the views about an object's location
@@ -106,8 +102,6 @@ private:
     
     // create the initial objects, output constructor message
 	Model();
-    
-    // Do we need constructor here???
     
 	// disallow copy/move construction or assignment
     Model(const Model &) = delete;

@@ -35,7 +35,6 @@ public:
 	// set the parameters to the default values
 	void set_defaults();
 
-
 private:
     int size;			// current size of the display
 	double scale;		// distance per cell of the display
@@ -58,7 +57,6 @@ struct Fuel_course_speed
 
 class Sailing_view : public View {
 public:
-    
     void update_fuel(const std::string& name, double fuel) override;
     
     void update_course_speed(const std::string& name, Course_speed cs) override;
@@ -82,8 +80,7 @@ private:
 class Bridge_view : public View {
 public:
     Bridge_view(std::string ownship_name_, Point location_);
-    
-    
+
     void update_course_speed(const std::string& name, Course_speed cs) override;
     
     void update_location(const std::string& name, Point location) override;

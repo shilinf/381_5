@@ -33,28 +33,20 @@ Model& Model::get_instance()
 }
 
 Model::Model() : time(0){
-	island_container["Ex"] = shared_ptr<Island>(new Island("Exxon", Point(10, 10), 1000, 200));
-	island_container["Sh"] = shared_ptr<Island>(new Island("Shell", Point(0, 30), 1000, 200));
-	island_container["Be"] = shared_ptr<Island>(new Island("Bermuda", Point(20, 20)));
-    island_container["Tr"] = shared_ptr<Island>(new Island("Treasure_Island", Point(50, 5), 100, 5));
+	island_container["Exxon"] = shared_ptr<Island>(new Island("Exxon", Point(10, 10), 1000, 200));
+	island_container["Shell"] = shared_ptr<Island>(new Island("Shell", Point(0, 30), 1000, 200));
+	island_container["Bermuda"] = shared_ptr<Island>(new Island("Bermuda", Point(20, 20)));
+    island_container["Treasure_Island"] = shared_ptr<Island>(new Island("Treasure_Island", Point(50, 5), 100, 5));
 	
-	ship_container["Aj"] = create_ship("Ajax", "Cruiser", Point (15, 15));
-	ship_container["Xe"] = create_ship("Xerxes", "Cruiser", Point (25, 25));
-	ship_container["Va"] = create_ship("Valdez", "Tanker", Point (30, 30));
+	ship_container["Ajax"] = create_ship("Ajax", "Cruiser", Point (15, 15));
+	ship_container["Xerxes"] = create_ship("Xerxes", "Cruiser", Point (25, 25));
+	ship_container["Valdez"] = create_ship("Valdez", "Tanker", Point (30, 30));
     
-    copy(island_container.begin(), island_container.end(), inserter(object_container, object_container.begin()));
-    copy(ship_container.begin(), ship_container.end(), inserter(object_container, object_container.begin()));
-	//cout << "Model constructed" << endl;
+    for (auto island_pair : island_container)
+        object_container[island_pair.first.substr(0, 2)] = island_pair.second;
+    for (auto ship_pair : ship_container)
+        object_container[ship_pair.first.substr(0, 2)] = ship_pair.second;
 }
-
-/*
-Model::~Model()
-{
-    // not sure whether this can work....
-    //for_each(object_container.begin(), object_container.end(),
-    //         [](pair<string, shared_ptr<Sim_object>> object_pair) {delete object_pair.second;});
-    cout << "Model destructed" << endl;
-}*/
 
 bool Model::is_name_in_use(const std::string& name) const
 {
@@ -63,45 +55,43 @@ bool Model::is_name_in_use(const std::string& name) const
 
 bool Model::is_island_present(const std::string& name) const
 {
-    auto map_pair = island_container.find(name.substr(0, 2));
-    return map_pair != island_container.end() && map_pair->second->get_name() == name;
+    return island_container.find(name) != island_container.end();
 }
 
 void Model::add_island(shared_ptr<Island> new_island)
 {
-    string key = new_island->get_name().substr(0,2);
-    island_container.insert(make_pair(key, new_island));
-    object_container.insert(make_pair(key, new_island));
+    island_container[new_island->get_name()] = new_island;
+    object_container[new_island->get_name()] = new_island;
     new_island->broadcast_current_state();
 }
 
 shared_ptr<Island> Model::get_island_ptr(const std::string& name) const
 {
-    if (!is_island_present(name))
+    auto island_container_it = island_container.find(name);
+    if (island_container_it == island_container.end())
         throw Error("Island not found!");
-    return island_container.find(name.substr(0, 2))->second;
+    return island_container_it->second;
 }
 
 bool Model::is_ship_present(const std::string& name) const
 {
-    auto map_pair = ship_container.find(name.substr(0, 2));
-    return map_pair != ship_container.end() && map_pair->second->get_name() == name;
+    return ship_container.find(name) != ship_container.end();
 }
 
 void Model::add_ship(shared_ptr<Ship> new_ship)
 {
-    string key = new_ship->get_name().substr(0, 2);
-    ship_container.insert(make_pair(key, new_ship));
-    object_container.insert(make_pair(key, new_ship));
+    ship_container[new_ship->get_name()] = new_ship;
+    object_container[new_ship->get_name()] = new_ship;
     new_ship->broadcast_current_state();
 }
 
 
 shared_ptr<Ship> Model::get_ship_ptr(const std::string& name) const
 {
-    if (!is_ship_present(name))
+    auto ship_container_it = ship_container.find(name);
+    if (ship_container_it == ship_container.end())
         throw Error("Ship not found!");
-    return ship_container.find(name.substr(0, 2))->second;
+    return ship_container_it->second;
 }
                               
 void Model::describe() const
@@ -112,7 +102,6 @@ void Model::describe() const
 }
 
 
-// check whether the loop runs well, some pointer may be removed during the process
 void Model::update()
 {
     ++time;
@@ -131,9 +120,8 @@ void Model::attach(shared_ptr<View> view)
 
 void Model::detach(shared_ptr<View> view)
 {
-    view_container.erase(view_container.find(view));
+    view_container.erase(view);
 }
-
 
 
 
@@ -172,11 +160,9 @@ void Model::notify_gone(const std::string& name)
 
 void Model::remove_ship(shared_ptr<Ship> ship_ptr)
 {
-    string key = ship_ptr->get_name().substr(0, 2);
-    ship_container.erase(ship_container.find(key));
-    object_container.erase(object_container.find(key));
+    ship_container.erase(ship_ptr->get_name());
+    object_container.erase(ship_ptr->get_name().substr(0, 2));
 }
-
 
 
 set<shared_ptr<Island>, Island_comp> Model::get_all_islands()

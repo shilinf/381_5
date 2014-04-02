@@ -72,7 +72,7 @@ void Map_view::update_location(const std::string& name, Point location)
 
 void Map_view::update_remove(const std::string& name)
 {
-    points.erase(points.find(name));
+    points.erase(name);
 }
 
 void Map_view::draw()
@@ -154,35 +154,24 @@ bool Map_view::get_subscripts(int &ix, int &iy, Point location)
 
 void Sailing_view::update_fuel(const std::string& name, double fuel)
 {
-    auto pair_it = ships_info.find(name);
-    if (pair_it != ships_info.end())
-        pair_it->second.fuel = fuel;
-    else
-        ships_info.insert(make_pair(name, Fuel_course_speed(fuel)));
+    ships_info[name].fuel = fuel;
 }
 
 
-//??????????????
 void Sailing_view::update_course_speed(const std::string& name, Course_speed cs)
 {
-    auto pair_it = ships_info.find(name);
-    if (pair_it != ships_info.end())
-        pair_it->second.cs = cs;
-    //else
-    //    ships_info.insert(make_pair(name, Fuel_course_speed(0., cs)));
+    ships_info[name].cs = cs;
 }
 
 
 void Sailing_view::update_speed(const std::string& name, double speed)
 {
-    auto pair_it = ships_info.find(name);
-    if (pair_it != ships_info.end())
-        pair_it->second.cs.speed = speed;
+    ships_info[name].cs.speed = speed;
 }
 
 void Sailing_view::update_remove(const std::string& name)
 {
-    ships_info.erase(ships_info.find(name));
+    ships_info.erase(name);
 }
 
 
@@ -222,9 +211,8 @@ void Bridge_view::update_remove(const std::string& name)
 {
     if (name == ownship_name)
         sunk = true;
-    points.erase(points.find(name));
+    points.erase(name);
 }
-
 
 
 // prints out the current map
@@ -271,7 +259,6 @@ void Bridge_view::clear()
 {
     points.clear();
 }
-
 
 bool Bridge_view::compute_subscribt(double bearing, int &x)
 {

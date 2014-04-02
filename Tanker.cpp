@@ -3,6 +3,7 @@
 #include "Utility.h"
 #include "Island.h"
 #include <iostream>
+#include <cassert>
 
 using std::string;
 using std::cout; using std::endl;
@@ -53,6 +54,7 @@ void Tanker::describe() const
             cout << ", moving to unloading destination";
             break;
         default:
+            assert(false);
             break;
     }
     cout << endl;
@@ -161,6 +163,7 @@ void Tanker::update()
             }
             break;
         default:
+            assert(false);
             break;
     }
 }
