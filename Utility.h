@@ -3,6 +3,7 @@
 
 #include "Island.h"
 #include <exception>
+#include <memory>
 
 class Error : public std::exception {
 public:
