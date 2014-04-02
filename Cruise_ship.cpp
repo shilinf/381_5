@@ -129,6 +129,7 @@ void Cruise_ship::get_next_destination()
     }
     current_destination = closest_unvisited_island;
     cruise_state = MOVING;
+    remaining_islands.erase(closest_unvisited_island);
 }
 
 
