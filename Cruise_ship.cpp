@@ -50,7 +50,6 @@ void Cruise_ship::update()
             break;
         case FIND_NEXT_ISLAND:
             get_next_destination();
-            cruise_state = MOVING;
             cout << get_name() << " will visit " << current_destination->get_name() << endl;
             break;
         default:
