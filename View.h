@@ -1,6 +1,8 @@
 #ifndef VIEW_H
 #define VIEW_H
 
+#include "Geometry.h"
+#include "Navigation.h"
 #include <string>
 
 /* *** View class ***
@@ -26,47 +28,26 @@ with the appropriate functions. Since the view "remembers" the previously update
 information, the draw function will print out a map showing the previous objects
 using the new settings.
 */
-struct Course_speed;
-struct Point;
+
 
 class View {
 public:
-	// default constructor sets the default size, scale, and origin, outputs constructor message
-    //View() {}
+	virtual void update_location(const std::string& name, Point location) {}
     
-	//virtual ~View() {};	// outputs destructor message
+    virtual void update_fuel(const std::string& name, double fuel) {}
     
-	// Save the supplied name and location for future use in a draw() call
-	// If the name is already present,the new location replaces the previous one.
-	virtual void update_location(const std::string& name, Point location);
+    virtual void update_course_speed(const std::string& name, Course_speed cs) {}
     
-    
-    virtual void update_fuel(const std::string& name, double fuel);
-    
-    
-    
-    virtual void update_course_speed(const std::string& name, Course_speed cs);
-	
-    
-    virtual void update_speed(const std::string& name, double speed);
-    
-    
-    // reconsider when use = 0;
-    
-    
+    virtual void update_speed(const std::string& name, double speed) {}
     
 	// Remove the name and its location; no error if the name is not present.
 	virtual void update_remove(const std::string& name) = 0;
-    
-    
-    
     
 	// prints out the current map
 	virtual void draw() = 0;
 	
 	// Discard the saved information - drawing will show only a empty pattern
 	virtual void clear() = 0;
-
 };
 
 #endif

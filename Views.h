@@ -20,7 +20,6 @@ public:
 	
 	// Discard the saved information - drawing will show only a empty pattern
     void clear() override;
-
     
 	// modify the display parameters
 	// if the size is out of bounds will throw Error("New map size is too big!")
@@ -61,7 +60,6 @@ class Sailing_view : public View {
 public:
     
     void update_fuel(const std::string& name, double fuel) override;
-    
     
     void update_course_speed(const std::string& name, Course_speed cs) override;
 	// Remove the name and its location; no error if the name is not present.
@@ -109,14 +107,6 @@ private:
     std::map<std::string, Point> points;
     bool compute_subscribt(double bearing, int &x);
 };
-
-
-
-
-
-
-
-
 
 
 #endif

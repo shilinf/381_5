@@ -67,10 +67,7 @@ void Map_view::set_defaults()
 
 void Map_view::update_location(const std::string& name, Point location)
 {
-    auto pair_it = points.find(name);
-    if (pair_it != points.end())
-        points.erase(pair_it);
-    points.insert(make_pair(name, location));
+    points[name] = location;
 }
 
 void Map_view::update_remove(const std::string& name)
@@ -165,7 +162,7 @@ void Sailing_view::update_fuel(const std::string& name, double fuel)
 }
 
 
-
+//??????????????
 void Sailing_view::update_course_speed(const std::string& name, Course_speed cs)
 {
     auto pair_it = ships_info.find(name);
@@ -216,12 +213,9 @@ void Bridge_view::update_course_speed(const std::string& name, Course_speed cs)
 // Considering combine this with the map_view
 void Bridge_view::update_location(const std::string& name, Point location)
 {
-    auto pair_it = points.find(name);
-    if (pair_it != points.end())
-        points.erase(pair_it);
-    points.insert(make_pair(name, location));
     if (name == ownship_name)
         ownship_location = location;
+    points[name] = location;
 }
 
 void Bridge_view::update_remove(const std::string& name)
