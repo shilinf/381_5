@@ -37,6 +37,7 @@ void Cruise_ship::update()
             break;
         case MOVING_TO_START_ISLAND:
             if (!is_moving() && can_dock(current_destination)) {
+                dock(current_destination);
                 cout << get_name() << " cruise is over at " << start_island->get_name() << endl;
                 cruise_state = NO_DESTINATION;
             }
