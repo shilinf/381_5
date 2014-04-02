@@ -122,12 +122,13 @@ private:
 	// Updates position, fuel, and movement_state, assuming 1 time unit (1 hr)
 	void calculate_movement();
     void check_course_speed(double course, double speed);
+    void notify_course_and_speed();
 
 	// disallow copy/move, construction or assignment
-    Ship(const Ship&);
-    Ship(Ship&&);
-    Ship &operator= (const Ship&);
-    Ship &operator= (Ship &&);
+    Ship(const Ship&) = delete;
+    Ship(Ship&&) = delete;
+    Ship &operator= (const Ship&) = delete;
+    Ship &operator= (Ship &&) = delete;
 };
 
 #endif

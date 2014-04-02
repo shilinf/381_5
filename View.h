@@ -2,7 +2,6 @@
 #define VIEW_H
 
 #include "Geometry.h"
-#include "Navigation.h"
 #include <string>
 
 /* This class provides the interface for all of view objects. */
@@ -15,7 +14,7 @@ public:
     
     virtual void update_fuel(const std::string& name, double fuel) {}
     
-    virtual void update_course_speed(const std::string& name, Course_speed cs) {}
+    virtual void update_course(const std::string& name, double course) {}
     
     virtual void update_speed(const std::string& name, double speed) {}
     

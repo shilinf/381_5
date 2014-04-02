@@ -80,14 +80,14 @@ void Ship::broadcast_current_state()
 {
     Model::get_instance().notify_location(get_name(), get_location());
     Model::get_instance().notify_fuel(get_name(), fuel);
-    Model::get_instance().notify_course_speed(get_name(), track.get_course_speed());
+    notify_course_and_speed();
 }
 
 void Ship::set_destination_position_and_speed(Point destination_position, double speed)
 {
     destination = destination_position;
     check_course_speed(Compass_vector(get_location(), destination_position).direction, speed);
-    Model::get_instance().notify_course_speed(get_name(), track.get_course_speed());
+    notify_course_and_speed();
     cout << get_name() << " will sail on " << track.get_course_speed() << " to " << destination << endl;
     ship_state = MOVING_TO_POSITION;
 }
@@ -95,7 +95,7 @@ void Ship::set_destination_position_and_speed(Point destination_position, double
 void Ship::set_course_and_speed(double course, double speed)
 {
     check_course_speed(course, speed);
-    Model::get_instance().notify_course_speed(get_name(), track.get_course_speed());
+    notify_course_and_speed();
     cout << get_name() << " will sail on " << track.get_course_speed() << endl;
     ship_state = MOVING_ON_COURSE;
 }
@@ -109,6 +109,11 @@ void Ship::check_course_speed(double course, double speed)
     track.set_course_speed(Course_speed(course, speed));
 }
 
+void Ship::notify_course_and_speed()
+{
+    Model::get_instance().notify_speed(get_name(), track.get_speed());
+    Model::get_instance().notify_course(get_name(), track.get_course());
+}
 
 void Ship::stop()
 {

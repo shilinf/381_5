@@ -137,10 +137,10 @@ void Model::notify_fuel(const std::string& name, double fuel)
              bind(&View::update_fuel, _1, ref(name), ref(fuel)));
 }
 
-void Model::notify_course_speed(const std::string& name, Course_speed cs)
+void Model::notify_course(const std::string& name, double course)
 {
     for_each(view_container.begin(), view_container.end(),
-             bind(&View::update_course_speed, _1, ref(name), ref(cs)));
+             bind(&View::update_course, _1, ref(name), ref(course)));
 }
 
 

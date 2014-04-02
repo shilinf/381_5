@@ -39,10 +39,10 @@ private:
     
     
 	// forbid  copy/move, construction/assignment
-    Island(const Island &);
-    Island(Island &&);
-    Island &operator= (const Island &);
-    Island &operator= (Island &&);
+    Island(const Island &) = delete;
+    Island(Island &&) = delete;
+    Island &operator= (const Island &) = delete;
+    Island &operator= (Island &&) = delete;
 };
 
 #endif

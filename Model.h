@@ -28,7 +28,6 @@ class Ship;
 class View;
 class Island;
 struct Point;
-struct Course_speed;
 
 
 class Model {
@@ -79,10 +78,9 @@ public:
     
     void notify_fuel(const std::string& name, double fuel);
     
-    void notify_course_speed(const std::string& name, Course_speed cs);
+    void notify_course(const std::string& name, double course);
     
     void notify_speed(const std::string& name, double speed);
-    
     
 	// notify the views that an object is now gone
 	void notify_gone(const std::string& name);

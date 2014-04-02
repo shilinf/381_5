@@ -59,7 +59,7 @@ class Sailing_view : public View {
 public:
     void update_fuel(const std::string& name, double fuel) override;
     
-    void update_course_speed(const std::string& name, Course_speed cs) override;
+    void update_course(const std::string& name, double course) override;
 	// Remove the name and its location; no error if the name is not present.
     
     void update_speed(const std::string& name, double speed) override;
@@ -81,7 +81,7 @@ class Bridge_view : public View {
 public:
     Bridge_view(std::string ownship_name_, Point location_);
 
-    void update_course_speed(const std::string& name, Course_speed cs) override;
+    void update_course(const std::string& name, double course) override;
     
     void update_location(const std::string& name, Point location) override;
 	

@@ -158,9 +158,9 @@ void Sailing_view::update_fuel(const std::string& name, double fuel)
 }
 
 
-void Sailing_view::update_course_speed(const std::string& name, Course_speed cs)
+void Sailing_view::update_course(const std::string& name, double course)
 {
-    ships_info[name].cs = cs;
+    ships_info[name].cs.course = course;
 }
 
 
@@ -192,10 +192,10 @@ void Sailing_view::clear()
 
 Bridge_view::Bridge_view(std::string ownship_name_, Point location_) : ownship_name(ownship_name_), ownship_location(location_), sunk(false) {}
 
-void Bridge_view::update_course_speed(const std::string& name, Course_speed cs)
+void Bridge_view::update_course(const std::string& name, double course)
 {
     if (ownship_name == name)
-        ownship_course = cs.course;
+        ownship_course = course;
 }
 
 
