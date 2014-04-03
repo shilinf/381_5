@@ -12,9 +12,9 @@ using std::string;
 using std::ios; using std::setw;
 using std::streamsize;
 
-const int axes_label_gap = 3;
-const int label_width = 4;
-const int sailing_view_field_width = 10;
+const int axes_label_gap_c = 3;
+const int label_width_c = 4;
+const int sailing_view_field_width_c = 10;
 
 class Cout_format_saver {
 public:
@@ -78,7 +78,7 @@ void Map_view::draw()
     cout << "Display size: " <<size << ", scale: " << scale << ", origin: " << origin << endl;
     vector< vector<string> > output(size, vector<string>(size, ". "));
     bool exist_out_of_map = false;
-    for (auto map_pair : points) {
+    for (auto& map_pair : points) {
         int x, y;
         if (get_subscripts(x, y, map_pair.second)) {
             if (output[x][y] == ". ")
@@ -100,8 +100,8 @@ void Map_view::draw()
     Cout_format_saver cfs;
     cout.precision(0);
     for (int i = 0; i < size; i++) {
-        cout << setw(label_width);
-        if ((size - i) % axes_label_gap == 1)
+        cout << setw(label_width_c);
+        if ((size - i) % axes_label_gap_c == 1)
             cout << origin.y + scale * (size - i - 1);
         else
             cout << "";
@@ -110,8 +110,8 @@ void Map_view::draw()
             cout << output[j][size - i - 1];
         cout << endl;
     }
-    for (int i = 0; i <= (size-1)/axes_label_gap ; i++) {
-        cout << "  " << setw(label_width) << origin.x + axes_label_gap * scale * i;
+    for (int i = 0; i <= (size-1)/axes_label_gap_c ; i++) {
+        cout << "  " << setw(label_width_c) << origin.x + axes_label_gap_c * scale * i;
     }
     cout << endl;
 }
@@ -174,14 +174,14 @@ void Sailing_view::update_remove(const std::string& name)
 void Sailing_view::draw()
 {
     cout << "----- Sailing Data -----" << endl;
-    cout << setw(sailing_view_field_width) << "Ship" << setw(sailing_view_field_width)
-        << "Fuel" << setw(sailing_view_field_width) << "Course"
-        << setw(sailing_view_field_width) << "Speed" << endl;
-    for (auto map_pair : ships_info)
-        cout << setw(sailing_view_field_width) << map_pair.first
-            << setw(sailing_view_field_width)
-            << map_pair.second.fuel << setw(sailing_view_field_width)
-            << map_pair.second.cs.course << setw(sailing_view_field_width)
+    cout << setw(sailing_view_field_width_c) << "Ship" << setw(sailing_view_field_width_c)
+        << "Fuel" << setw(sailing_view_field_width_c) << "Course"
+        << setw(sailing_view_field_width_c) << "Speed" << endl;
+    for (auto& map_pair : ships_info)
+        cout << setw(sailing_view_field_width_c) << map_pair.first
+            << setw(sailing_view_field_width_c)
+            << map_pair.second.fuel << setw(sailing_view_field_width_c)
+            << map_pair.second.cs.course << setw(sailing_view_field_width_c)
             << map_pair.second.cs.speed << endl;
 }
 
@@ -223,7 +223,7 @@ void Bridge_view::draw()
         cout << "Bridge view from " << ownship_name <<  " position "
             << ownship_location << " heading " << ownship_course << endl;
         output = vector< vector<string> >(3, vector<string>(19, ". "));
-        for (auto map_pair : points) {
+        for (auto& map_pair : points) {
             Compass_position relative_position(ownship_location, map_pair.second);
             if (relative_position.range >= 0.005 && relative_position.range <= 20.) {
                 int x;
@@ -236,8 +236,8 @@ void Bridge_view::draw()
             }
         }
     }
-    for (int i = 0 ; i < axes_label_gap; i++) {
-        cout << setw(label_width) << "" << ' ';
+    for (int i = 0 ; i < axes_label_gap_c; i++) {
+        cout << setw(label_width_c) << "" << ' ';
         for (int j = 0; j < 19; j++)
             cout << output[i][j];
         cout << endl;
@@ -245,7 +245,7 @@ void Bridge_view::draw()
     Cout_format_saver cfs;
     cout.precision(0);
     for (int i = 0; i <= 6 ; i++) {
-        cout << "  " << setw(label_width) << -90 + axes_label_gap * 10 * i;
+        cout << "  " << setw(label_width_c) << -90 + axes_label_gap_c * 10 * i;
     }
     cout << endl;
 }
@@ -264,7 +264,7 @@ bool Bridge_view::compute_subscribt(double bearing, int &x)
         bridge_view_angle -= 360.;
     double delta_x = (bridge_view_angle + 90.) / 10.0;
 	x = int(floor(delta_x));
-    return (x >= 0 && x <= 18) ? true : false;
+    return (x >= 0 && x <= 18);
 }
 
 

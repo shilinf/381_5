@@ -23,9 +23,9 @@ void Controller::run()
 {
     Command_map_t commands_map;
     load_command_map(commands_map);
+    string first_word, command;
     while (true) {
         cout << "\nTime " << Model::get_instance().get_time() << ": Enter command: ";
-        string first_word, command;
         cin >> first_word;
         try {
             if (first_word == "quit") {

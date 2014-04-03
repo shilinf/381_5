@@ -124,7 +124,7 @@ void Cruise_ship::get_next_destination()
     shared_ptr<Island> closest_unvisited_island = *remaining_islands.begin();
     double closest_distance = cartesian_distance(current_destination->get_location(),
                                                  closest_unvisited_island->get_location());
-    for (auto island_ptr : remaining_islands) {
+    for (auto& island_ptr : remaining_islands) {
         double distance = cartesian_distance(current_destination->get_location(),
                                              island_ptr->get_location());
         if (distance < closest_distance) {

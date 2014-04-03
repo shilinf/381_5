@@ -32,9 +32,9 @@ Model::Model() : time(0){
 	ship_container["Xerxes"] = create_ship("Xerxes", "Cruiser", Point (25, 25));
 	ship_container["Valdez"] = create_ship("Valdez", "Tanker", Point (30, 30));
     
-    for (auto island_pair : island_container)
+    for (auto& island_pair : island_container)
         object_container[island_pair.first.substr(0, 2)] = island_pair.second;
-    for (auto ship_pair : ship_container)
+    for (auto& ship_pair : ship_container)
         object_container[ship_pair.first.substr(0, 2)] = ship_pair.second;
 }
 
@@ -51,7 +51,7 @@ bool Model::is_island_present(const std::string& name) const
 void Model::add_island(shared_ptr<Island> new_island)
 {
     island_container[new_island->get_name()] = new_island;
-    object_container[new_island->get_name()] = new_island;
+    object_container[new_island->get_name().substr(0, 2)] = new_island;
     new_island->broadcast_current_state();
 }
 
@@ -71,7 +71,7 @@ bool Model::is_ship_present(const std::string& name) const
 void Model::add_ship(shared_ptr<Ship> new_ship)
 {
     ship_container[new_ship->get_name()] = new_ship;
-    object_container[new_ship->get_name()] = new_ship;
+    object_container[new_ship->get_name().substr(0, 2)] = new_ship;
     new_ship->broadcast_current_state();
 }
 
@@ -156,7 +156,7 @@ void Model::remove_ship(shared_ptr<Ship> ship_ptr)
 set<shared_ptr<Island>, Island_comp> Model::get_all_islands() const
 {
     set<shared_ptr<Island>, Island_comp> all_islands;
-    for (auto map_pair : island_container)
+    for (auto& map_pair : island_container)
         all_islands.insert(map_pair.second);
     return all_islands;
 }

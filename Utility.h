@@ -1,9 +1,10 @@
 #ifndef UTILITIES_H
 #define UTILITIES_H
 
-#include "Island.h"
 #include <exception>
 #include <memory>
+
+class Island;
 
 class Error : public std::exception {
 public:
@@ -15,9 +16,8 @@ private:
 };
 
 struct Island_comp {
-    bool operator() (const std::shared_ptr<Island> island1, const std::shared_ptr<Island> island2) const
-    {return island1->get_name() < island2->get_name();}
+    bool operator() (const std::shared_ptr<Island> island1,
+                     const std::shared_ptr<Island> island2) const;
 };
-
 
 #endif
