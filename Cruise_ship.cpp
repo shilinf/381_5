@@ -12,13 +12,10 @@ using std::shared_ptr;
 using std::vector;
 using std::find_if;
 
-
 Cruise_ship::Cruise_ship(const std::string& name_, Point position_) : Ship(name_, position_, 500., 15., 2., 0), cruise_state(NO_DESTINATION)
 {
-    islands = Model::get_instance().get_all_islands();
+    remaining_islands = Model::get_instance().get_all_islands();
 }
-
-
 
 void Cruise_ship::update()
 {
@@ -84,7 +81,6 @@ void Cruise_ship::set_destination_position_and_speed(Point destination, double s
         cruise_speed = speed;
         start_island = island_ptr;
         current_destination = island_ptr;
-        remaining_islands = islands;
         remaining_islands.erase(island_ptr);
     }
 }
@@ -104,13 +100,12 @@ void Cruise_ship::stop()
     Ship::stop();
 }
 
-
-
 void Cruise_ship::check_cancle_cruise()
 {
     if (cruise_state != NO_DESTINATION) {
         cout << get_name() << " canceling current cruise" << endl;
         cruise_state = NO_DESTINATION;
+        remaining_islands = Model::get_instance().get_all_islands();
     }
 }
 
@@ -139,8 +134,8 @@ void Cruise_ship::get_next_destination()
 
 std::shared_ptr<Island> Cruise_ship::is_island_position(Point position)
 {
-    auto set_it = find_if(islands.begin(), islands.end(), [&position](const shared_ptr<Island> island_ptr){return position == island_ptr->get_location();});
-    if (set_it == islands.end())
+    auto set_it = find_if(remaining_islands.begin(), remaining_islands.end(), [&position](const shared_ptr<Island> island_ptr){return position == island_ptr->get_location();});
+    if (set_it == remaining_islands.end())
         return nullptr;
     else
         return *set_it;

@@ -1,5 +1,6 @@
 #include "Controller.h"
 #include "Model.h"
+#include "View.h"
 #include "Views.h"
 #include "Ship.h"
 #include "Island.h"
@@ -7,7 +8,6 @@
 #include "Ship_factory.h"
 #include "Utility.h"
 #include <iostream>
-#include <map>
 #include <utility>
 #include <algorithm>
 
@@ -19,22 +19,11 @@ using std::shared_ptr; using std::make_shared;
 using std::for_each; using std::find_if;
 using std::mem_fn;
 
-Controller::Controller()
-{
-    //cout << "Controller constructed" << endl;
-}
-
-Controller::~Controller()
-{
-    //cout << "Controller destructed" << endl;
-}
 
 void Controller::run()
 {
-    
     Command_map_t commands_map;
     load_command_map(commands_map);
-    
     while (true) {
         cout << "\nTime " << Model::get_instance().get_time() << ": Enter command: ";
         string first_word, command;
@@ -68,35 +57,32 @@ void Controller::run()
 
 void Controller::load_command_map(Command_map_t &commands_map)
 {
-    commands_map.insert(make_pair("open_map_view", &Controller::open_map_view));
-    commands_map.insert(make_pair("close_map_view", &Controller::close_map_view));
-    commands_map.insert(make_pair("open_sailing_view", &Controller::open_sailing_view));
-    commands_map.insert(make_pair("close_sailing_view", &Controller::close_sailing_view));
-    commands_map.insert(make_pair("open_bridge_view", &Controller::open_bridge_view));
-    commands_map.insert(make_pair("close_bridge_view", &Controller::close_bridge_view));
-
+    commands_map["open_map_view"] = &Controller::open_map_view;
+    commands_map["close_map_view"] = &Controller::close_map_view;
+    commands_map["open_sailing_view"] = &Controller::open_sailing_view;
+    commands_map["close_sailing_view"] = &Controller::close_sailing_view;
+    commands_map["open_bridge_view"] = &Controller::open_bridge_view;
+    commands_map["close_bridge_view"] = &Controller::close_bridge_view;
     
+    commands_map["default"] = &Controller::restore_default_map;
+    commands_map["size"] = &Controller::set_map_size;
+    commands_map["zoom"] = &Controller::set_map_scale;
+    commands_map["pan"] = &Controller::set_map_origin;
+    commands_map["show"] = &Controller::draw_map;
+    commands_map["status"] = &Controller::show_object_status;
+    commands_map["go"] = &Controller::update_all_objects;
+    commands_map["create"] = &Controller::create_new_ship;
     
-    
-    commands_map.insert(make_pair("default", &Controller::restore_default_map));
-    commands_map.insert(make_pair("size", &Controller::set_map_size));
-    commands_map.insert(make_pair("zoom", &Controller::set_map_scale));
-    commands_map.insert(make_pair("pan", &Controller::set_map_origin));
-    commands_map.insert(make_pair("show", &Controller::draw_map));
-    commands_map.insert(make_pair("status", &Controller::show_object_status));
-    commands_map.insert(make_pair("go", &Controller::update_all_objects));
-    commands_map.insert(make_pair("create", &Controller::create_new_ship));
-    
-    commands_map.insert(make_pair("course", &Controller::set_ship_course));
-    commands_map.insert(make_pair("position", &Controller::set_ship_to_position));
-    commands_map.insert(make_pair("destination", &Controller::set_ship_destination_island));
-    commands_map.insert(make_pair("load_at", &Controller::set_ship_load_island));
-    commands_map.insert(make_pair("unload_at", &Controller::set_ship_unload_island));
-    commands_map.insert(make_pair("dock_at", &Controller::set_ship_dock_island));
-    commands_map.insert(make_pair("attack", &Controller::set_ship_attack_target));
-    commands_map.insert(make_pair("refuel", &Controller::set_ship_refuel));
-    commands_map.insert(make_pair("stop", &Controller::set_ship_stop));
-    commands_map.insert(make_pair("stop_attack", &Controller::set_ship_stop_attack));
+    commands_map["course"] = &Controller::set_ship_course;
+    commands_map["position"] = &Controller::set_ship_to_position;
+    commands_map["destination"] = &Controller::set_ship_destination_island;
+    commands_map["load_at"] = &Controller::set_ship_load_island;
+    commands_map["unload_at"] = &Controller::set_ship_unload_island;
+    commands_map["dock_at"] = &Controller::set_ship_dock_island;
+    commands_map["attack"] = &Controller::set_ship_attack_target;
+    commands_map["refuel"] = &Controller::set_ship_refuel;
+    commands_map["stop"] = &Controller::set_ship_stop;
+    commands_map["stop_attack"] = &Controller::set_ship_stop_attack;
 }
 
 void Controller::open_map_view()
@@ -108,7 +94,6 @@ void Controller::open_map_view()
     draw_view_order.push_back(map_view_ptr);
     Model::get_instance().attach(map_view_ptr);
 }
-
 
 void Controller::close_map_view()
 {
@@ -140,8 +125,6 @@ void Controller::close_sailing_view()
 void Controller::open_bridge_view()
 {
     string ship_name = read_string();
-    //if (!Model::get_instance().is_ship_present(ship_name))
-    //    throw Error("Ship not found!");
     shared_ptr<Ship> ship_ptr = Model::get_instance().get_ship_ptr(ship_name);
     if (bridge_view_container.find(ship_name) != bridge_view_container.end())
         throw Error("Bridge view is already open for that ship!");

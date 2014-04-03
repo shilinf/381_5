@@ -30,7 +30,6 @@ private:
     std::shared_ptr<Island> start_island;
     std::shared_ptr<Island> current_destination;
     std::set<std::shared_ptr<Island>, Island_comp> remaining_islands;
-    std::set<std::shared_ptr<Island>, Island_comp> islands;
     double cruise_speed;
     void check_cancle_cruise();
     void get_next_destination();

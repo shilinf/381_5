@@ -87,7 +87,6 @@ public:
 	
 	// Remove the name and its location; no error if the name is not present.
     void update_remove(const std::string& name) override;
-
     
 	// prints out the current map
     void draw() override;
