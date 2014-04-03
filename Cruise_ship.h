@@ -9,7 +9,13 @@
 #include <string>
 
 /*
-A Cruise_ship has the capability to automatically visit all of the islands. 
+A Cruise_ship has the capability to automatically visit all of the islands. When 
+it arrives at an island, it docks, and then it stays for a few updates. On the 
+first one, it attempts to refuel from the island. On the next update it does 
+nothing while the passengers see the local sights. On the third update, it sets 
+course for its next destination (the closest unvisited island; in case of a tie, 
+the first in alphabetical order). When it has visited the last island, it returns 
+to the first island, the one it was originally sent to.
 */
 
 

@@ -50,8 +50,10 @@ void Cruise_ship::update()
             break;
         case FIND_NEXT_ISLAND:
             get_next_destination();
-            Ship::set_destination_position_and_speed(current_destination->get_location(), cruise_speed);
-            cout << get_name() << " will visit " << current_destination->get_name() << endl;
+            Ship::set_destination_position_and_speed(current_destination->get_location(),
+                                                     cruise_speed);
+            cout << get_name() << " will visit "
+                << current_destination->get_name() << endl;
             break;
         default:
             assert(false);

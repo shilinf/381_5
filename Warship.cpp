@@ -70,7 +70,8 @@ void Warship::fire_at_target()
 
 bool Warship::target_in_range() const
 {
-    return cartesian_distance(get_location(), get_target()->get_location()) <= maximum_range;
+    return cartesian_distance(get_location(), get_target()->get_location())
+        <= maximum_range;
 }
 
 shared_ptr<Ship> Warship::get_target() const
