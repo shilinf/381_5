@@ -19,7 +19,7 @@ public:
 		double maximum_speed_, double fuel_consumption_, int resistance_,
         int firepower_, double maximum_range_) :
         Ship(name_, position_, fuel_capacity_, maximum_speed_, fuel_consumption_, resistance_),
-    firepower(firepower_), maximum_range(maximum_range_), warship_state(NOT_ATTACKING) {}
+    firepower(firepower_), maximum_range(maximum_range_), attacking(false) {}
 
 	// a pure virtual function to mark this as an abstract class,
 	// but defined anyway to output destructor message
@@ -56,10 +56,9 @@ protected:
     std::shared_ptr<Ship> get_target() const;
     
 private:
-    enum Warship_state_e {ATTACKING, NOT_ATTACKING};
     int firepower;
     double maximum_range;
-    Warship_state_e warship_state;
+    bool attacking;
     std::weak_ptr<Ship> target_ptr;
 };
 

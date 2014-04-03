@@ -11,7 +11,7 @@ Warship::~Warship() {}
 void Warship::describe() const
 {
     Ship::describe();
-    if (warship_state == ATTACKING) {
+    if (attacking) {
         shared_ptr<Ship> sp = target_ptr.lock();
         if (!sp)
             cout << "Attacking absent ship" << endl;
@@ -30,15 +30,15 @@ void Warship::attack(shared_ptr<Ship> target_ptr_)
     if (target_ptr_ == target_ptr.lock())
         throw Error("Already attacking this target!");
     target_ptr = target_ptr_;
-    warship_state = ATTACKING;
+    attacking = true;
     cout << get_name() << " will attack " << target_ptr_->get_name() << endl;
 }
 
 void Warship::stop_attack()
 {
-    if (!is_attacking())
+    if (!attacking)
         throw Error("Was not attacking!");
-    warship_state = NOT_ATTACKING;
+    attacking = false;
     target_ptr.reset();
     cout << get_name() << " stopping attack" << endl;
 }
@@ -47,7 +47,7 @@ void Warship::stop_attack()
 void Warship::update()
 {
     Ship::update();
-    if (warship_state == ATTACKING) {
+    if (attacking) {
         shared_ptr<Ship> sp = target_ptr.lock();
         if (!is_afloat() || !sp || !sp->is_afloat()) {
             stop_attack();
@@ -59,7 +59,7 @@ void Warship::update()
 
 bool Warship::is_attacking() const
 {
-    return warship_state == ATTACKING;
+    return attacking;
 }
 
 void Warship::fire_at_target()
