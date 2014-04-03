@@ -5,7 +5,6 @@
 #include <string>
 #include <map>
 #include <set>
-#include <vector>
 #include <memory>
 
 /*
@@ -59,11 +58,7 @@ public:
 	void describe() const;
 	// increment the time, and tell all objects to update themselves
 	void update();	
-	
-    /* Note: In Project 4 there is only one View. There will be multiple View objects
-    later. So implement the View services so that multiple Views are possible by
-    using a container of View pointers.  You should delete this comment. */
-    
+	   
 	/* View services */
 	// Attaching a View adds it to the container and causes it to be updated
     // with all current objects'location (or other state information.
@@ -72,14 +67,16 @@ public:
     // - no updates sent to it thereafter.
 	void detach(std::shared_ptr<View>);
     
-    
     // notify the views about an object's location
 	void notify_location(const std::string& name, Point location);
     
+    // notify the views about an object's fuel
     void notify_fuel(const std::string& name, double fuel);
     
+    // notify the views about an object's course
     void notify_course(const std::string& name, double course);
     
+    // notify the views about an object's speed
     void notify_speed(const std::string& name, double speed);
     
 	// notify the views that an object is now gone
@@ -87,9 +84,7 @@ public:
     
     void remove_ship(std::shared_ptr<Ship> ship_ptr);
     
-    
-    std::set<std::shared_ptr<Island>, Island_comp> get_all_islands();
-    
+    std::set<std::shared_ptr<Island>, Island_comp> get_all_islands() const;
     
 private:
 	int time;		// the simulated time
@@ -98,7 +93,7 @@ private:
     std::map<std::string, std::shared_ptr<Ship> > ship_container;
     std::set<std::shared_ptr<View> > view_container;
     
-    // create the initial objects, output constructor message
+    // create the initial objects
 	Model();
     
 	// disallow copy/move construction or assignment

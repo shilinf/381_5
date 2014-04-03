@@ -1,11 +1,9 @@
 #include "Views.h"
 #include "Utility.h"
-#include "Navigation.h"
-#include <iostream>
 #include <cmath>
 #include <vector>
-#include <string>
 #include <iomanip>
+#include <iostream>
 
 
 using std::cout; using std::endl;
@@ -163,7 +161,6 @@ void Sailing_view::update_course(const std::string& name, double course)
     ships_info[name].cs.course = course;
 }
 
-
 void Sailing_view::update_speed(const std::string& name, double speed)
 {
     ships_info[name].cs.speed = speed;
@@ -174,14 +171,18 @@ void Sailing_view::update_remove(const std::string& name)
     ships_info.erase(name);
 }
 
-
-// prints out the current map
 void Sailing_view::draw()
 {
     cout << "----- Sailing Data -----" << endl;
-    cout << setw(sailing_view_field_width) << "Ship" << setw(sailing_view_field_width) << "Fuel" << setw(sailing_view_field_width) << "Course" << setw(sailing_view_field_width) << "Speed" << endl;
+    cout << setw(sailing_view_field_width) << "Ship" << setw(sailing_view_field_width)
+        << "Fuel" << setw(sailing_view_field_width) << "Course"
+        << setw(sailing_view_field_width) << "Speed" << endl;
     for (auto map_pair : ships_info)
-        cout << setw(sailing_view_field_width) << map_pair.first << setw(sailing_view_field_width) << map_pair.second.fuel << setw(sailing_view_field_width) << map_pair.second.cs.course << setw(sailing_view_field_width) << map_pair.second.cs.speed << endl;
+        cout << setw(sailing_view_field_width) << map_pair.first
+            << setw(sailing_view_field_width)
+            << map_pair.second.fuel << setw(sailing_view_field_width)
+            << map_pair.second.cs.course << setw(sailing_view_field_width)
+            << map_pair.second.cs.speed << endl;
 }
 
 void Sailing_view::clear()
@@ -190,16 +191,12 @@ void Sailing_view::clear()
 }
 
 
-Bridge_view::Bridge_view(std::string ownship_name_, Point location_) : ownship_name(ownship_name_), ownship_location(location_), sunk(false) {}
-
 void Bridge_view::update_course(const std::string& name, double course)
 {
     if (ownship_name == name)
         ownship_course = course;
 }
 
-
-// Considering combine this with the map_view
 void Bridge_view::update_location(const std::string& name, Point location)
 {
     if (name == ownship_name)
@@ -214,17 +211,17 @@ void Bridge_view::update_remove(const std::string& name)
     points.erase(name);
 }
 
-
-// prints out the current map
 void Bridge_view::draw()
 {
     vector< vector<string> > output;
     if (sunk) {
-        cout << "Bridge view from " << ownship_name << " sunk at " << ownship_location << endl;
+        cout << "Bridge view from " << ownship_name << " sunk at " <<
+            ownship_location << endl;
         output = vector< vector<string> >(3, vector<string>(19, "w-"));
     }
     else {
-        cout << "Bridge view from " << ownship_name <<  " position " << ownship_location << " heading " << ownship_course << endl;
+        cout << "Bridge view from " << ownship_name <<  " position "
+            << ownship_location << " heading " << ownship_course << endl;
         output = vector< vector<string> >(3, vector<string>(19, ". "));
         for (auto map_pair : points) {
             Compass_position relative_position(ownship_location, map_pair.second);
@@ -239,7 +236,6 @@ void Bridge_view::draw()
             }
         }
     }
-    
     for (int i = 0 ; i < axes_label_gap; i++) {
         cout << setw(label_width) << "" << ' ';
         for (int j = 0; j < 19; j++)
@@ -254,7 +250,6 @@ void Bridge_view::draw()
     cout << endl;
 }
 
-// Discard the saved information - drawing will show only a empty pattern
 void Bridge_view::clear()
 {
     points.clear();
@@ -269,10 +264,7 @@ bool Bridge_view::compute_subscribt(double bearing, int &x)
         bridge_view_angle -= 360.;
     double delta_x = (bridge_view_angle + 90.) / 10.0;
 	x = int(floor(delta_x));
-	if (x < 0 || x > 18)
-		return false;
-	else
-		return true;
+    return (x >= 0 && x <= 18) ? true : false;
 }
 
 

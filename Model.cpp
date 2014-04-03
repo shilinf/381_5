@@ -3,27 +3,17 @@
 #include "Island.h"
 #include "Ship.h"
 #include "Ship_factory.h"
-#include "Utility.h"
 #include "View.h"
-#include <iostream>
+#include "Geometry.h"
 #include <algorithm>
 #include <functional>
-#include <vector>
-#include <limits>
 
 using std::string;
-using std::cout; using std::endl;
-using std::merge; using std::inserter;
-using std::pair; using std::make_pair;
 using std::mem_fn; using std::bind;
 using std::placeholders::_1; using std::ref;
-using std::map; using std::vector;using std::set;
+using std::map; using std::set;
 using std::shared_ptr;
-using std::for_each; using std::find_if;
-using std::numeric_limits;
-
-/* create some islands and ships using the following code in the Model constructor.
-Do not change the execution order of these code fragments. You should delete this comment. */
+using std::for_each;
 
 
 Model& Model::get_instance()
@@ -123,8 +113,6 @@ void Model::detach(shared_ptr<View> view)
     view_container.erase(view);
 }
 
-
-
 void Model::notify_location(const std::string& name, Point location)
 {
     for_each(view_container.begin(), view_container.end(),
@@ -165,20 +153,11 @@ void Model::remove_ship(shared_ptr<Ship> ship_ptr)
 }
 
 
-set<shared_ptr<Island>, Island_comp> Model::get_all_islands()
+set<shared_ptr<Island>, Island_comp> Model::get_all_islands() const
 {
     set<shared_ptr<Island>, Island_comp> all_islands;
     for (auto map_pair : island_container)
         all_islands.insert(map_pair.second);
     return all_islands;
 }
-
-
-
-
-
-
-
-
-
 

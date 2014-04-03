@@ -1,5 +1,4 @@
 #include "Tanker.h"
-#include "Ship.h"
 #include "Utility.h"
 #include "Island.h"
 #include <iostream>
@@ -101,11 +100,13 @@ void Tanker::start_cycle()
         tanker_state = UNLOADING;
     }
     else if (cargo == 0.) {
-        Ship::set_destination_position_and_speed(load_destination->get_location(), get_maximum_speed());
+        Ship::set_destination_position_and_speed(load_destination->get_location(),
+                                                 get_maximum_speed());
         tanker_state = MOVING_TO_LOADING;
     }
     else if (cargo > 0.) {
-        Ship::set_destination_position_and_speed(unload_destination->get_location(), get_maximum_speed());
+        Ship::set_destination_position_and_speed(unload_destination->get_location(),
+                                                 get_maximum_speed());
         tanker_state = MOVING_TO_UNLOADING;
     }
 }
@@ -143,7 +144,8 @@ void Tanker::update()
             double cargo_needed = cargo_capacity - cargo;
             if (cargo_needed < 0.005) {
                 cargo = cargo_capacity;
-                Ship::set_destination_position_and_speed(unload_destination->get_location(), get_maximum_speed());
+                Ship::set_destination_position_and_speed(unload_destination->get_location(),
+                                                         get_maximum_speed());
                 tanker_state = MOVING_TO_UNLOADING;
             }
             else {
@@ -154,7 +156,8 @@ void Tanker::update()
         }
         case UNLOADING:
             if (cargo == 0.) {
-                Ship::set_destination_position_and_speed(load_destination->get_location(), get_maximum_speed());
+                Ship::set_destination_position_and_speed(load_destination->get_location(),
+                                                         get_maximum_speed());
                 tanker_state = MOVING_TO_LOADING;
             }
             else {

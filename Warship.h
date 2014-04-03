@@ -3,6 +3,7 @@
 
 
 #include "Ship.h"
+#include <string>
 #include <memory>
 
 /* Warship class

@@ -2,17 +2,16 @@
 #include "Model.h"
 #include "Island.h"
 #include <iostream>
-#include <vector>
 #include <algorithm>
 #include <cassert>
 
 
 using std::cout; using std::endl;
 using std::shared_ptr;
-using std::vector;
 using std::find_if;
 
-Cruise_ship::Cruise_ship(const std::string& name_, Point position_) : Ship(name_, position_, 500., 15., 2., 0), cruise_state(NO_DESTINATION)
+Cruise_ship::Cruise_ship(const std::string& name_, Point position_) :
+    Ship(name_, position_, 500., 15., 2., 0), cruise_state(NO_DESTINATION)
 {
     remaining_islands = Model::get_instance().get_all_islands();
 }
@@ -36,8 +35,10 @@ void Cruise_ship::update()
         case MOVING_TO_START_ISLAND:
             if (!is_moving() && can_dock(current_destination)) {
                 dock(current_destination);
-                cout << get_name() << " cruise is over at " << start_island->get_name() << endl;
+                cout << get_name() << " cruise is over at "
+                    << start_island->get_name() << endl;
                 cruise_state = NO_DESTINATION;
+                remaining_islands = Model::get_instance().get_all_islands();
             }
             break;
         case REFUEL:
@@ -77,7 +78,8 @@ void Cruise_ship::set_destination_position_and_speed(Point destination, double s
     if (island_ptr) {
         cruise_state = MOVING;
         cout << get_name() << " will visit " << island_ptr->get_name() << endl;
-        cout << get_name() <<  " cruise will start and end at " << island_ptr->get_name() << endl;
+        cout << get_name() <<  " cruise will start and end at "
+            << island_ptr->get_name() << endl;
         cruise_speed = speed;
         start_island = island_ptr;
         current_destination = island_ptr;
@@ -118,9 +120,11 @@ void Cruise_ship::get_next_destination()
         return;
     }
     shared_ptr<Island> closest_unvisited_island = *remaining_islands.begin();
-    double closest_distance = cartesian_distance(current_destination->get_location(), closest_unvisited_island->get_location());
+    double closest_distance = cartesian_distance(current_destination->get_location(),
+                                                 closest_unvisited_island->get_location());
     for (auto island_ptr : remaining_islands) {
-        double distance = cartesian_distance(current_destination->get_location(), island_ptr->get_location());
+        double distance = cartesian_distance(current_destination->get_location(),
+                                             island_ptr->get_location());
         if (distance < closest_distance) {
             closest_unvisited_island = island_ptr;
             closest_distance = distance;
@@ -134,11 +138,10 @@ void Cruise_ship::get_next_destination()
 
 std::shared_ptr<Island> Cruise_ship::is_island_position(Point position)
 {
-    auto set_it = find_if(remaining_islands.begin(), remaining_islands.end(), [&position](const shared_ptr<Island> island_ptr){return position == island_ptr->get_location();});
-    if (set_it == remaining_islands.end())
-        return nullptr;
-    else
-        return *set_it;
+    auto set_it = find_if(remaining_islands.begin(), remaining_islands.end(),
+                          [&position](const shared_ptr<Island> island_ptr)
+                            {return position == island_ptr->get_location();});
+    return (set_it == remaining_islands.end()) ? nullptr : *set_it;
 }
 
 

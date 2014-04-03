@@ -10,15 +10,14 @@
 #include <iostream>
 #include <utility>
 #include <algorithm>
+#include <functional>
 
 using std::string;
 using std::cout; using std::cin; using std::endl;
 using std::map;
-using std::make_pair;
-using std::shared_ptr; using std::make_shared;
+using std::shared_ptr;
 using std::for_each; using std::find_if;
 using std::mem_fn;
-
 
 void Controller::run()
 {
@@ -129,7 +128,7 @@ void Controller::open_bridge_view()
     if (bridge_view_container.find(ship_name) != bridge_view_container.end())
         throw Error("Bridge view is already open for that ship!");
     shared_ptr<Bridge_view> new_bridge_view(new Bridge_view(ship_name, ship_ptr->get_location()));
-    bridge_view_container.insert(make_pair(ship_name, new_bridge_view));
+    bridge_view_container[ship_name] = new_bridge_view;
     draw_view_order.push_back(new_bridge_view);
     Model::get_instance().attach(new_bridge_view);
 }
@@ -176,21 +175,17 @@ void Controller::set_map_origin()
     map_view_ptr->set_origin(read_point());
 }
 
-
-
 // draw all the exist maps
 void Controller::draw_map()
 {
     for_each(draw_view_order.begin(), draw_view_order.end(), mem_fn(&View::draw));
 }
 
-
 void Controller::check_map_view_exist()
 {
     if (!map_view_ptr)
         throw Error("Map view is not open!");
 }
-
 
 void Controller::show_object_status()
 {
@@ -215,8 +210,6 @@ void Controller::create_new_ship()
     Model::get_instance().add_ship(new_ship);
 }
 
-
-// maybe order different??????????
 void Controller::set_ship_course()
 {
     double course = read_double();
@@ -303,9 +296,8 @@ void Controller::discard_input_remainder()
 
 Point Controller::read_point()
 {
-    double x, y;
-    if (!(cin >> x) || !(cin >> y))
-        throw Error("Expected a double!");
+    double x = read_double();
+    double y = read_double();
     return Point(x, y);
 }
 
@@ -333,7 +325,8 @@ shared_ptr<Island> Controller::read_get_island()
 
 void Controller::remove_view(std::shared_ptr<View> view)
 {
-    auto view_it = find_if(draw_view_order.begin(), draw_view_order.end(), [&view](shared_ptr<View> view_ptr){return view_ptr == view;});
+    auto view_it = find_if(draw_view_order.begin(), draw_view_order.end(),
+                           [&view](shared_ptr<View> view_ptr){return view_ptr == view;});
     draw_view_order.erase(view_it);
 }
 

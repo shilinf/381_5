@@ -108,7 +108,8 @@ protected:
 	std::shared_ptr<Island> get_docked_Island() const;
 
 private:
-    enum Ship_state_e {MOVING_TO_POSITION, STOPPED, DEAD_IN_THE_WATER, MOVING_ON_COURSE, DOCKED, SUNK};
+    enum Ship_state_e {MOVING_TO_POSITION, STOPPED, DEAD_IN_THE_WATER,
+        MOVING_ON_COURSE, DOCKED, SUNK};
     double fuel_capacity;
 	double fuel;						// Current amount of fuel
     double maximum_speed;

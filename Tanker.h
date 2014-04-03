@@ -4,6 +4,9 @@
 
 #include "Ship.h"
 #include <memory>
+#include <string>
+
+
 /*
 A Tanker is a ship with a large corgo capacity for fuel.
 It can be told an Island to load fuel at, and an Island to unload at.
@@ -22,7 +25,10 @@ class Island;
 class Tanker : public Ship {
 public:
 	// initialize
-	Tanker(const std::string& name_, Point position_) : Ship(name_, position_, 100., 10., 2., 0), cargo_capacity(1000.), cargo(0.), tanker_state(NO_CARGO_DESTINATIONS), load_destination(nullptr), unload_destination(nullptr) {}
+	Tanker(const std::string& name_, Point position_) :
+    Ship(name_, position_, 100., 10., 2., 0), cargo_capacity(1000.), cargo(0.),
+    tanker_state(NO_CARGO_DESTINATIONS), load_destination(nullptr),
+    unload_destination(nullptr) {}
 	
 	// This class overrides these Ship functions so that it can check if this Tanker has assigned cargo destinations.
 	// if so, throw an Error("Tanker has cargo destinations!"); otherwise, simply call the Ship functions.
@@ -40,17 +46,18 @@ public:
 	void stop() override;
 	
 	void update() override;
+    
 	void describe() const override;
     
 private:
-    enum Tanker_state_e {NO_CARGO_DESTINATIONS, UNLOADING, MOVING_TO_LOADING, LOADING, MOVING_TO_UNLOADING};
+    enum Tanker_state_e {NO_CARGO_DESTINATIONS, UNLOADING, MOVING_TO_LOADING,
+        LOADING, MOVING_TO_UNLOADING};
     double cargo_capacity;
     double cargo;
     Tanker_state_e tanker_state;
     std::shared_ptr<Island>load_destination;
     std::shared_ptr<Island>unload_destination;
-    
-    // private member functions
+
     void check_no_cargo_destination();
     void start_cycle();
 };

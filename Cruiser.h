@@ -4,6 +4,7 @@
 
 #include "Warship.h"
 #include <memory>
+#include <string>
 
 
 /*
@@ -21,7 +22,8 @@ resistance 6, firepower 3, maximum attacking range 15
 class Cruiser : public Warship {
 public:
 	// initialize
-	Cruiser(const std::string& name_, Point position_) : Warship(name_, position_, 1000., 20., 10., 6, 3, 15.) {}
+	Cruiser(const std::string& name_, Point position_) :
+        Warship(name_, position_, 1000., 20., 10., 6, 3, 15.) {}
     
 	void update() override;
 	void describe() const override;

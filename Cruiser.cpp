@@ -31,7 +31,3 @@ void Cruiser::describe() const
     Warship::describe();
 }
 
-
-
-
-

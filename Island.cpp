@@ -1,12 +1,9 @@
 #include "Island.h"
 #include "Model.h"
 #include <iostream>
-#include <string>
 
 using std::string;
 using std::cout; using std::endl;
-
-Island::Island (const string& name_, Point position_, double fuel_, double production_rate_) : Sim_object(name_), position(position_), fuel(fuel_), production_rate(production_rate_) {}
 
 double Island::provide_fuel(double request)
 {

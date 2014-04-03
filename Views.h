@@ -5,6 +5,7 @@
 #include "Navigation.h"
 #include "Geometry.h"
 #include <map>
+#include <string>
 
 class Map_view : public View {
 public:
@@ -51,7 +52,8 @@ struct Fuel_course_speed
 {
     double fuel;
     Course_speed cs;
-    Fuel_course_speed(double fuel_ = 0., Course_speed cs_ = Course_speed()) : fuel(fuel_), cs(cs_) {}
+    Fuel_course_speed(double fuel_ = 0., Course_speed cs_ = Course_speed()) :
+        fuel(fuel_), cs(cs_) {}
 };
 
 
@@ -60,10 +62,10 @@ public:
     void update_fuel(const std::string& name, double fuel) override;
     
     void update_course(const std::string& name, double course) override;
-	// Remove the name and its location; no error if the name is not present.
     
     void update_speed(const std::string& name, double speed) override;
     
+    // Remove the ship; no error if the name is not present.
     void update_remove(const std::string& name) override;
     
 	// prints out the current map
@@ -79,13 +81,14 @@ private:
 
 class Bridge_view : public View {
 public:
-    Bridge_view(std::string ownship_name_, Point location_);
+    Bridge_view(std::string ownship_name_, Point location_) :
+        ownship_name(ownship_name_), ownship_location(location_), sunk(false) {}
 
     void update_course(const std::string& name, double course) override;
     
     void update_location(const std::string& name, Point location) override;
 	
-	// Remove the name and its location; no error if the name is not present.
+	// Remove the ship; no error if the name is not present.
     void update_remove(const std::string& name) override;
     
 	// prints out the current map
@@ -99,8 +102,8 @@ private:
     double ownship_course;
     Point ownship_location;
     bool sunk;
-    
     std::map<std::string, Point> points;
+    
     bool compute_subscribt(double bearing, int &x);
 };
 

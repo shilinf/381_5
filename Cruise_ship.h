@@ -4,9 +4,14 @@
 
 #include "Ship.h"
 #include "Utility.h"
-#include <vector>
 #include <set>
 #include <memory>
+#include <string>
+
+/*
+A Cruise_ship has the capability to automatically visit all of the islands. 
+*/
+
 
 class Island;
 
@@ -25,11 +30,14 @@ public:
 	void describe() const override;
     
 private:
-    enum Cruise_state_e {NO_DESTINATION, MOVING, REFUEL, WAIT, FIND_NEXT_ISLAND, MOVING_TO_START_ISLAND};
+    enum Cruise_state_e {NO_DESTINATION, MOVING, REFUEL, WAIT, FIND_NEXT_ISLAND,
+        MOVING_TO_START_ISLAND};
     Cruise_state_e cruise_state;
     std::shared_ptr<Island> start_island;
     std::shared_ptr<Island> current_destination;
+    // The islands haven't been visited.
     std::set<std::shared_ptr<Island>, Island_comp> remaining_islands;
+    
     double cruise_speed;
     void check_cancle_cruise();
     void get_next_destination();

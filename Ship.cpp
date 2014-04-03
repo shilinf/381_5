@@ -40,7 +40,8 @@ bool Ship::is_afloat() const
 
 bool Ship::can_dock(shared_ptr<Island> island_ptr) const
 {
-    return ship_state == STOPPED && cartesian_distance(island_ptr->get_location(), get_location()) <= 0.1;
+    return ship_state == STOPPED &&
+        cartesian_distance(island_ptr->get_location(), get_location()) <= 0.1;
 }
 
 
@@ -88,7 +89,8 @@ void Ship::set_destination_position_and_speed(Point destination_position, double
     destination = destination_position;
     check_course_speed(Compass_vector(get_location(), destination_position).direction, speed);
     notify_course_and_speed();
-    cout << get_name() << " will sail on " << track.get_course_speed() << " to " << destination << endl;
+    cout << get_name() << " will sail on " << track.get_course_speed()
+        << " to " << destination << endl;
     ship_state = MOVING_TO_POSITION;
 }
 
@@ -173,7 +175,8 @@ void Ship::stop_attack()
 void Ship::receive_hit(int hit_force, shared_ptr<Ship> attacker_ptr)
 {
     resistance -= hit_force;
-    cout << get_name() << " hit with " << hit_force << ", resistance now " << resistance << endl;
+    cout << get_name() << " hit with " << hit_force << ", resistance now "
+        << resistance << endl;
     if (resistance < 0.) {
         cout << get_name() << " sunk" << endl;
         ship_state = SUNK;

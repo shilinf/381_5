@@ -1,14 +1,10 @@
 #include "Warship.h"
 #include "Utility.h"
-#include <string>
 #include <iostream>
 
 using std::string;
 using std::cout; using std::endl;
 using std::shared_ptr;
-
-
-
 
 Warship::~Warship() {}
 
@@ -48,7 +44,6 @@ void Warship::stop_attack()
 }
 
 
-// check the use of get_target, what about return a nullptr here???
 void Warship::update()
 {
     Ship::update();
@@ -67,8 +62,6 @@ bool Warship::is_attacking() const
     return warship_state == ATTACKING;
 }
 
-
-//check whether return wrong type
 void Warship::fire_at_target()
 {
     cout << get_name() << " fires" << endl;
