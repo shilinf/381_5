@@ -123,7 +123,7 @@ void Controller::close_sailing_view()
 void Controller::open_bridge_view()
 {
     string ship_name = read_string();
-    if (!Model::get_instance().is_island_present(ship_name))
+    if (!Model::get_instance().is_ship_present(ship_name))
         throw Error("Ship not found!");
     if (bridge_view_container.find(ship_name) != bridge_view_container.end())
         throw Error("Bridge view is already open for that ship!");
