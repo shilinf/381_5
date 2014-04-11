@@ -19,42 +19,7 @@ using std::shared_ptr;
 using std::for_each; using std::find_if;
 using std::mem_fn;
 
-void Controller::run()
-{
-    Command_map_t commands_map;
-    load_command_map(commands_map);
-    string first_word, command;
-    while (true) {
-        cout << "\nTime " << Model::get_instance().get_time() << ": Enter command: ";
-        cin >> first_word;
-        try {
-            if (first_word == "quit") {
-                quit();
-                return;
-            }
-            else if (Model::get_instance().is_ship_present(first_word)) {
-                target_ship = Model::get_instance().get_ship_ptr(first_word);
-                cin >> command;
-            }
-            else
-                command = first_word;
-            auto cfp = commands_map[command];
-            if (cfp)
-                (this->*cfp)();
-            else {
-                commands_map.erase(command);
-                cout << "Unrecognized command!" << endl;
-                discard_input_remainder();
-            }
-        } catch (Error& error) {
-            cout << error.what() << endl;
-            discard_input_remainder();
-        }
-        target_ship.reset();
-    }
-}
-
-void Controller::load_command_map(Command_map_t &commands_map)
+Controller::Controller()
 {
     commands_map["open_map_view"] = &Controller::open_map_view;
     commands_map["close_map_view"] = &Controller::close_map_view;
@@ -84,12 +49,47 @@ void Controller::load_command_map(Command_map_t &commands_map)
     commands_map["stop_attack"] = &Controller::set_ship_stop_attack;
 }
 
+void Controller::run()
+{
+    string first_word, command;
+    while (true) {
+        cout << "\nTime " << Model::get_instance().get_time() << ": Enter command: ";
+        cin >> first_word;
+        if (first_word == "quit") {
+            quit();
+            return;
+        }
+        try {
+            if (Model::get_instance().is_ship_present(first_word)) {
+                target_ship = Model::get_instance().get_ship_ptr(first_word);
+                cin >> command;
+            }
+            else
+                command = first_word;
+            auto cfp = commands_map[command];
+            if (cfp)
+                (this->*cfp)();
+            else {
+                commands_map.erase(command);
+                cout << "Unrecognized command!" << endl;
+                discard_input_remainder();
+            }
+        } catch (Error& error) {
+            cout << error.what() << endl;
+            discard_input_remainder();
+        } catch (...) {
+            cout << "Unknown exception caught." << endl;
+            return;
+        }
+        target_ship.reset();
+    }
+}
+
 void Controller::open_map_view()
 {
     if (map_view_ptr)
         throw Error("Map view is already open!");
-    shared_ptr<Map_view> new_map_view(new Map_view);
-    map_view_ptr = new_map_view;
+    map_view_ptr.reset(new Map_view);
     draw_view_order.push_back(map_view_ptr);
     Model::get_instance().attach(map_view_ptr);
 }
@@ -106,8 +106,7 @@ void Controller::open_sailing_view()
 {
     if (sailing_view_ptr)
         throw Error("Sailing data view is already open!");
-    shared_ptr<Sailing_view> new_sailing_view(new Sailing_view);
-    sailing_view_ptr = new_sailing_view;
+    sailing_view_ptr.reset(new Sailing_view);
     draw_view_order.push_back(sailing_view_ptr);
     Model::get_instance().attach(sailing_view_ptr);
 }
@@ -124,10 +123,9 @@ void Controller::close_sailing_view()
 void Controller::open_bridge_view()
 {
     string ship_name = read_string();
-    shared_ptr<Ship> ship_ptr = Model::get_instance().get_ship_ptr(ship_name);
     if (bridge_view_container.find(ship_name) != bridge_view_container.end())
         throw Error("Bridge view is already open for that ship!");
-    shared_ptr<Bridge_view> new_bridge_view(new Bridge_view(ship_name, ship_ptr->get_location()));
+    shared_ptr<Bridge_view> new_bridge_view(new Bridge_view(ship_name));
     bridge_view_container[ship_name] = new_bridge_view;
     draw_view_order.push_back(new_bridge_view);
     Model::get_instance().attach(new_bridge_view);

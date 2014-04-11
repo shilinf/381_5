@@ -8,26 +8,25 @@ using std::shared_ptr;
 
 Warship::~Warship() {}
 
-void Warship::describe() const
+void Warship::update()
 {
-    Ship::describe();
+    Ship::update();
     if (attacking) {
-        shared_ptr<Ship> sp = target_ptr.lock();
-        if (!sp)
-            cout << "Attacking absent ship" << endl;
+        shared_ptr<Ship> sp = get_target();
+        if (!sp || !sp->is_afloat())
+            stop_attack();
         else
-            cout << "Attacking " << sp->get_name() << endl;
+            cout << get_name() << " is attacking " << endl;
     }
 }
-
 
 void Warship::attack(shared_ptr<Ship> target_ptr_)
 {
     if (!is_afloat())
         throw Error("Cannot attack!");
-    if (this == target_ptr_.get())
+    if (shared_from_this() == target_ptr_)
         throw Error("Warship may not attack itself!");
-    if (target_ptr_ == target_ptr.lock())
+    if (target_ptr_ == get_target())
         throw Error("Already attacking this target!");
     target_ptr = target_ptr_;
     attacking = true;
@@ -44,18 +43,19 @@ void Warship::stop_attack()
 }
 
 
-void Warship::update()
+
+void Warship::describe() const
 {
-    Ship::update();
+    Ship::describe();
     if (attacking) {
-        shared_ptr<Ship> sp = target_ptr.lock();
-        if (!is_afloat() || !sp || !sp->is_afloat()) {
-            stop_attack();
-        }
+        shared_ptr<Ship> sp = get_target();
+        if (!sp)
+            cout << "Attacking absent ship" << endl;
         else
-            cout << get_name() << " is attacking " << endl;
+            cout << "Attacking " << sp->get_name() << endl;
     }
 }
+
 
 bool Warship::is_attacking() const
 {

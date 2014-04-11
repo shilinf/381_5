@@ -48,7 +48,7 @@ bool Ship::can_dock(shared_ptr<Island> island_ptr) const
 void Ship::describe() const
 {
     cout << get_name() << " at " << get_location();
-    if (ship_state != SUNK)
+    if (is_afloat())
         cout << ", fuel: " << fuel << " tons, resistance: " << resistance << endl;
     switch (ship_state) {
         case SUNK:
@@ -87,7 +87,7 @@ void Ship::broadcast_current_state()
 void Ship::set_destination_position_and_speed(Point destination_position, double speed)
 {
     destination = destination_position;
-    check_course_speed(Compass_vector(get_location(), destination_position).direction, speed);
+    check_and_set_course_speed(Compass_vector(get_location(), destination_position).direction, speed);
     notify_course_and_speed();
     cout << get_name() << " will sail on " << track.get_course_speed()
         << " to " << destination << endl;
@@ -96,13 +96,13 @@ void Ship::set_destination_position_and_speed(Point destination_position, double
 
 void Ship::set_course_and_speed(double course, double speed)
 {
-    check_course_speed(course, speed);
+    check_and_set_course_speed(course, speed);
     notify_course_and_speed();
     cout << get_name() << " will sail on " << track.get_course_speed() << endl;
     ship_state = MOVING_ON_COURSE;
 }
 
-void Ship::check_course_speed(double course, double speed)
+void Ship::check_and_set_course_speed(double course, double speed)
 {
     if (!can_move())
         throw Error("Ship cannot move!");
@@ -180,6 +180,7 @@ void Ship::receive_hit(int hit_force, shared_ptr<Ship> attacker_ptr)
     if (resistance < 0.) {
         cout << get_name() << " sunk" << endl;
         ship_state = SUNK;
+        track.set_speed(0.);
         Model::get_instance().notify_gone(get_name());
         Model::get_instance().remove_ship(shared_from_this());
     }
@@ -187,7 +188,7 @@ void Ship::receive_hit(int hit_force, shared_ptr<Ship> attacker_ptr)
 
 shared_ptr<Island> Ship::get_docked_Island() const
 {
-    return (ship_state == DOCKED) ? docked_at : nullptr;
+    return is_docked() ? docked_at : nullptr;
 }
 
 void Ship::update()

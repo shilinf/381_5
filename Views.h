@@ -48,13 +48,6 @@ private:
 	bool get_subscripts(int &ix, int &iy, Point location);
 };
 
-struct Fuel_course_speed
-{
-    double fuel;
-    Course_speed cs;
-    Fuel_course_speed(double fuel_ = 0., Course_speed cs_ = Course_speed()) :
-        fuel(fuel_), cs(cs_) {}
-};
 
 
 class Sailing_view : public View {
@@ -75,14 +68,21 @@ public:
     void clear() override;
     
 private:
+    struct Fuel_course_speed
+    {
+        Course_speed cs;
+        double fuel;
+        Fuel_course_speed(Course_speed cs_ = Course_speed(), double fuel_ = 0.) :
+        cs(cs_), fuel(fuel_){}
+    };
     std::map<std::string, Fuel_course_speed> ships_info;
 };
 
 
 class Bridge_view : public View {
 public:
-    Bridge_view(std::string ownship_name_, Point location_) :
-        ownship_name(ownship_name_), ownship_location(location_), sunk(false) {}
+    Bridge_view(std::string ownship_name_) :
+        ownship_name(ownship_name_), sunk(false) {}
 
     void update_course(const std::string& name, double course) override;
     
@@ -100,7 +100,6 @@ public:
 private:
     std::string ownship_name;
     double ownship_course;
-    Point ownship_location;
     bool sunk;
     std::map<std::string, Point> points;
     

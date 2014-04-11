@@ -5,7 +5,6 @@
 #include "Geometry.h"
 #include "Sim_object.h"
 #include "Track_base.h"
-#include <string>
 #include <memory>
 
 /***** Ship Class *****/
@@ -122,7 +121,7 @@ private:
 
 	// Updates position, fuel, and movement_state, assuming 1 time unit (1 hr)
 	void calculate_movement();
-    void check_course_speed(double course, double speed);
+    void check_and_set_course_speed(double course, double speed);
     void notify_course_and_speed();
 
 	// disallow copy/move, construction or assignment

@@ -3,7 +3,6 @@
 
 #include "Sim_object.h"
 #include "Geometry.h"
-#include <string>
 
 /***** Island Class *****/
 /* Islands are a kind of Sim_object; they have an amount of fuel and a an amount by which it increases

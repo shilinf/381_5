@@ -16,51 +16,10 @@ const int axes_label_gap_c = 3;
 const int label_width_c = 4;
 const int sailing_view_field_width_c = 10;
 
-class Cout_format_saver {
-public:
-    Cout_format_saver() :
-    old_flags(cout.flags()), old_precision(cout.precision()) {}
-    ~Cout_format_saver() {
-        cout.flags(old_flags);
-        cout.precision(old_precision);
-    }
-private:
-    ios::fmtflags old_flags;
-    streamsize old_precision;
-};
-
 
 Map_view::Map_view()
 {
     set_defaults();
-}
-
-void Map_view::set_size(int size_)
-{
-    if (size_ <= 6)
-        throw Error("New map size is too small!");
-    if (size_ > 30)
-        throw Error("New map size is too big!");
-    size = size_;
-}
-
-void Map_view::set_scale(double scale_)
-{
-    if (scale_ <= 0.0)
-        throw Error("New map scale must be positive!");
-    scale = scale_;
-}
-
-void Map_view::set_origin(Point origin_)
-{
-    origin = origin_;
-}
-
-void Map_view::set_defaults()
-{
-    size = 25;
-    scale = 2.0;
-    origin = Point(-10, -10);
 }
 
 void Map_view::update_location(const std::string& name, Point location)
@@ -75,6 +34,19 @@ void Map_view::update_remove(const std::string& name)
 
 void Map_view::draw()
 {
+    class Cout_format_saver {
+    public:
+        Cout_format_saver() :
+        old_flags(cout.flags()), old_precision(cout.precision()) {}
+        ~Cout_format_saver() {
+            cout.flags(old_flags);
+            cout.precision(old_precision);
+        }
+    private:
+        ios::fmtflags old_flags;
+        streamsize old_precision;
+    };
+    
     cout << "Display size: " <<size << ", scale: " << scale << ", origin: " << origin << endl;
     vector< vector<string> > output(size, vector<string>(size, ". "));
     bool exist_out_of_map = false;
@@ -120,6 +92,35 @@ void Map_view::clear()
 {
     points.clear();
 }
+
+void Map_view::set_size(int size_)
+{
+    if (size_ <= 6)
+        throw Error("New map size is too small!");
+    if (size_ > 30)
+        throw Error("New map size is too big!");
+    size = size_;
+}
+
+void Map_view::set_scale(double scale_)
+{
+    if (scale_ <= 0.0)
+        throw Error("New map scale must be positive!");
+    scale = scale_;
+}
+
+void Map_view::set_origin(Point origin_)
+{
+    origin = origin_;
+}
+
+void Map_view::set_defaults()
+{
+    size = 25;
+    scale = 2.0;
+    origin = Point(-10, -10);
+}
+
 
 /* *** Use this function to calculate the subscripts for the cell. */
 
@@ -199,8 +200,6 @@ void Bridge_view::update_course(const std::string& name, double course)
 
 void Bridge_view::update_location(const std::string& name, Point location)
 {
-    if (name == ownship_name)
-        ownship_location = location;
     points[name] = location;
 }
 
@@ -208,23 +207,25 @@ void Bridge_view::update_remove(const std::string& name)
 {
     if (name == ownship_name)
         sunk = true;
-    points.erase(name);
+    else
+        points.erase(name);
 }
 
 void Bridge_view::draw()
 {
     vector< vector<string> > output;
+    Point own_location = points[ownship_name];
     if (sunk) {
         cout << "Bridge view from " << ownship_name << " sunk at " <<
-            ownship_location << endl;
+            own_location << endl;
         output = vector< vector<string> >(3, vector<string>(19, "w-"));
     }
     else {
         cout << "Bridge view from " << ownship_name <<  " position "
-            << ownship_location << " heading " << ownship_course << endl;
+            << own_location << " heading " << ownship_course << endl;
         output = vector< vector<string> >(3, vector<string>(19, ". "));
         for (auto& map_pair : points) {
-            Compass_position relative_position(ownship_location, map_pair.second);
+            Compass_position relative_position(own_location, map_pair.second);
             if (relative_position.range >= 0.005 && relative_position.range <= 20.) {
                 int x;
                 if (compute_subscribt(relative_position.bearing, x)) {
@@ -242,8 +243,6 @@ void Bridge_view::draw()
             cout << output[i][j];
         cout << endl;
     }
-    Cout_format_saver cfs;
-    cout.precision(0);
     for (int i = 0; i <= 6 ; i++) {
         cout << "  " << setw(label_width_c) << -90 + axes_label_gap_c * 10 * i;
     }

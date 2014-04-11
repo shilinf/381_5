@@ -43,8 +43,8 @@ private:
     std::shared_ptr<Island> current_destination;
     // The islands haven't been visited.
     std::set<std::shared_ptr<Island>, Island_comp> remaining_islands;
-    
     double cruise_speed;
+    
     void check_cancle_cruise();
     void get_next_destination();
     std::shared_ptr<Island> is_island_position(Point position);

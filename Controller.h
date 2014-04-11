@@ -25,6 +25,7 @@ using Command_map_t = std::map<std::string, void(Controller::*)()>;
 
 class Controller {
 public:
+    Controller();
 	// create View object, run the program by acccepting user commands, then destroy View object
 	void run();
     
@@ -34,6 +35,7 @@ private:
     std::map<std::string, std::shared_ptr<Bridge_view>> bridge_view_container;
     std::vector<std::shared_ptr<View>> draw_view_order;
     std::shared_ptr<Ship> target_ship; // ship pointer for ship commands
+    Command_map_t commands_map;
     
     // command functions
     void open_map_view();
@@ -72,7 +74,6 @@ private:
     std::shared_ptr<Island> read_get_island();
     void remove_view(std::shared_ptr<View> view);
     void discard_input_remainder();
-    void load_command_map(Command_map_t &commands_map);
     void restore_default_map();
 };
 

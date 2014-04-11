@@ -25,9 +25,7 @@ void Tanker::set_course_and_speed(double course, double speed)
 void Tanker::stop()
 {
     Ship::stop();
-    load_destination = nullptr;
-    unload_destination = nullptr;
-    tanker_state = NO_CARGO_DESTINATIONS;
+    clear_destination();
     cout << get_name() << " now has no cargo destinations" << endl;
 }
 
@@ -69,7 +67,6 @@ void Tanker::set_load_destination(shared_ptr<Island> destination)
     if (unload_destination)
         start_cycle();
 }
-
 
 
 void Tanker::set_unload_destination(shared_ptr<Island> destination)
@@ -116,9 +113,7 @@ void Tanker::update()
     Ship::update();
     if (!can_move()) {
         if (tanker_state != NO_CARGO_DESTINATIONS) {
-            tanker_state = NO_CARGO_DESTINATIONS;
-            load_destination = nullptr;
-            unload_destination = nullptr;
+            clear_destination();
             cout << get_name() << " now has no cargo destinations" << endl;
         }
         return;
@@ -176,3 +171,12 @@ void Tanker::check_no_cargo_destination()
     if (tanker_state != NO_CARGO_DESTINATIONS)
         throw Error("Tanker has cargo destinations!");
 }
+
+void Tanker::clear_destination()
+{
+    load_destination.reset();
+    unload_destination.reset();
+    tanker_state = NO_CARGO_DESTINATIONS;
+}
+
+

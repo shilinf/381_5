@@ -60,6 +60,7 @@ private:
 
     void check_no_cargo_destination();
     void start_cycle();
+    void clear_destination();
 };
 
 
